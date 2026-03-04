@@ -1,0 +1,346 @@
+/* ========================================
+   Hero Section
+   ======================================== */
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+  /* scroll-snap-align: start; — cubierto por la regla global en styles.css */
+}
+
+/* Carrusel Swiper como fondo */
+.hero__carousel {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero__carousel .swiper-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.hero__carousel .swiper-slide {
+  width: 100%;
+  height: 100%;
+}
+
+.hero__slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Panel diagonal oscuro */
+.hero__diagonal-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(26, 33, 48, 0.95) 0%, rgba(41, 50, 65, 0.92) 100%);
+  clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding-left: 8%;
+  padding-right: 5%;
+}
+
+/* Contenido dentro del panel diagonal */
+.hero__diagonal-panel .hero__content {
+  position: relative;
+  text-align: left;
+  padding: 0;
+  width: 100%;
+  will-change: transform, opacity, filter;
+}
+
+/* Titulo - Typewriter */
+.hero__title {
+  display: inline;
+  font-family: var(--font-heading);
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--peach);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 4px 15px rgba(0, 0, 0, 0.7),
+    0 0 40px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.hero__title-prefix {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hero__title-word {
+  display: inline;
+  color: var(--peach);
+  margin-right: 2px;
+}
+
+/* Cursor parpadeante */
+.hero__cursor {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 2.8rem;
+  font-weight: 300;
+  color: var(--peach) !important;
+  animation: blink 0.8s step-end infinite;
+  vertical-align: baseline;
+  opacity: 1 !important;
+}
+
+.hero__cursor--hidden {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes titleReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Subtitulo - Fade in up */
+.hero__subtitle {
+  display: block;
+  margin-top: var(--spacing-lg);
+  margin-left: 0;
+  margin-right: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 0, 0, 0.5);
+  max-width: 100%;
+  line-height: 1.7;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero__subtitle--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* CTA Button */
+.hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: var(--spacing-xl);
+  padding: 14px 32px;
+  background: var(--peach);
+  color: var(--jet);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero__cta--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero__cta:hover {
+  background: var(--ember);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(238, 108, 77, 0.4);
+}
+
+.hero__cta i {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.hero__cta:hover i {
+  transform: translateX(4px);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   Indicador de scroll (flecha)
+   ======================================== */
+
+.hero__scroll-indicator {
+  position: absolute;
+  bottom: 40px;
+  left: 25%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero__scroll-arrow {
+  width: 20px;
+  height: 20px;
+  border-right: 2px solid var(--powder);
+  border-bottom: 2px solid var(--powder);
+  transform: rotate(45deg);
+  margin-bottom: -8px;
+  animation: bounce 2s ease infinite;
+}
+
+.hero__scroll-arrow--2 {
+  opacity: 0.5;
+  animation-delay: 0.15s;
+}
+
+.hero__scroll-arrow--3 {
+  opacity: 0.3;
+  animation-delay: 0.3s;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    margin-top: 0;
+  }
+  50% {
+    margin-top: 10px;
+  }
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+
+@media (max-width: 768px) {
+  .hero__diagonal-panel {
+    width: 70%;
+    padding-left: 5%;
+    padding-right: 3%;
+    clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
+  }
+
+  .hero__title {
+    font-size: var(--font-size-2xl);
+    letter-spacing: 0.1em;
+  }
+
+  .hero__cursor {
+    font-size: var(--font-size-2xl);
+  }
+
+  .hero__subtitle {
+    font-size: var(--font-size-base);
+    padding: 0 var(--spacing-sm);
+  }
+
+  .hero__cta {
+    padding: 12px 24px;
+    font-size: var(--font-size-sm);
+  }
+
+  .hero__scroll-indicator {
+    left: 35%;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero__diagonal-panel {
+    width: 90%;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+  }
+
+  .hero__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .hero__cursor {
+    font-size: var(--font-size-xl);
+  }
+
+  .hero__subtitle {
+    font-size: var(--font-size-sm);
+  }
+
+  .hero__cta {
+    padding: 10px 20px;
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-lg);
+  }
+
+  .hero__scroll-indicator {
+    bottom: 24px;
+    left: 42%;
+  }
+
+  .hero__scroll-arrow {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Parallax fallback para mobile (iOS no soporta background-attachment: fixed) */
+@supports (-webkit-touch-callout: none) {
+  .hero {
+    background-attachment: scroll;
+  }
+}
+
+/* Reduced motion - desactiva animaciones innecesarias */
+@media (prefers-reduced-motion: reduce) {
+  .hero__scroll-indicator {
+    display: none;
+  }
+
+  .hero__subtitle {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero__cursor {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

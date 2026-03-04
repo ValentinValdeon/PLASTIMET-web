@@ -1,0 +1,38 @@
+<header class="header" id="mainHeader">
+  <nav class="header__nav">
+    <a href="/" class="header__logo">
+      <img src="/images/logo_letras_blancas.png" alt="PLASTIMET - Líderes en Extrusión de PVC" class="header__logo-img">
+    </a>
+
+    <!-- Navegación desktop -->
+    <ul class="header__links">
+      <li><a href="<%= homeBase %>#hero" class="header__link">Inicio</a></li>
+      <li><a href="<%= homeBase %>#about" class="header__link">Nosotros</a></li>
+      <li><a href="<%= homeBase %>#products" class="header__link">Catálogo</a></li>
+      <li><a href="<%= homeBase %>#contact" class="header__link">Contacto</a></li>
+    </ul>
+
+    <!-- Botón hamburguesa (solo mobile) -->
+    <button
+      class="header__hamburger"
+      id="navToggle"
+      aria-label="Abrir menú de navegación"
+      aria-expanded="false"
+      aria-controls="navList"
+    >
+      <span class="header__hamburger-bar"></span>
+      <span class="header__hamburger-bar"></span>
+      <span class="header__hamburger-bar"></span>
+    </button>
+  </nav>
+
+  <!-- Overlay de navegación mobile -->
+  <div class="header__nav-overlay" id="navList" aria-hidden="true">
+    <ul class="header__nav-overlay-links">
+      <li><a href="<%= homeBase %>#hero" class="header__link nav__link">Inicio</a></li>
+      <li><a href="<%= homeBase %>#about" class="header__link nav__link">Nosotros</a></li>
+      <li><a href="<%= homeBase %>#products" class="header__link nav__link">Catálogo</a></li>
+      <li><a href="<%= homeBase %>#contact" class="header__link nav__link">Contacto</a></li>
+    </ul>
+  </div>
+</header>

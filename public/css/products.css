@@ -1,0 +1,538 @@
+/* ========================================
+   Sección Productos — Flip Cards 3D
+   Tema: Oscuro Dramático
+   ======================================== */
+
+.products {
+  background-color: var(--jet);
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  overflow: hidden;
+}
+
+.products::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ========================================
+   Contenedor principal
+   ======================================== */
+
+.products__container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 8rem;
+}
+
+/* ========================================
+   Título y subtítulo
+   ======================================== */
+
+.products__title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--cyan);
+  text-align: center;
+  margin-bottom: var(--spacing-sm);
+  position: relative;
+}
+
+.products__title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--peach), rgba(238, 108, 77, 0.3));
+  margin: var(--spacing-sm) auto 0;
+  border-radius: 2px;
+}
+
+.products__subtitle {
+  font-family: var(--font-family);
+  font-size: var(--font-size-lg);
+  color: var(--powder);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+/* ========================================
+   Grid de productos
+   ======================================== */
+
+.products__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+  perspective: 1000px;
+}
+
+/* ========================================
+   Animación de aparición (al hacer scroll)
+   ======================================== */
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.products__card {
+  background: transparent;
+  min-height: 270px;
+  cursor: pointer;
+  position: relative;
+  opacity: 0;
+}
+
+.products__card--animate {
+  animation: fadeSlideUp 0.6s ease forwards;
+}
+
+.products__card--animate:nth-child(1) { animation-delay: 0s; }
+.products__card--animate:nth-child(2) { animation-delay: 0.1s; }
+.products__card--animate:nth-child(3) { animation-delay: 0.2s; }
+.products__card--animate:nth-child(4) { animation-delay: 0.3s; }
+.products__card--animate:nth-child(5) { animation-delay: 0.4s; }
+.products__card--animate:nth-child(6) { animation-delay: 0.5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .products__card {
+    opacity: 1;
+  }
+
+  .products__card--animate {
+    animation: none;
+  }
+}
+
+/* ========================================
+   Flip Card - Estructura
+   ======================================== */
+
+.products__card {
+  background: transparent;
+  min-height: 270px;
+  cursor: pointer;
+  position: relative;
+}
+
+.products__card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.products__card:hover .products__card-inner,
+.products__card:focus .products__card-inner,
+.products__card:focus-within .products__card-inner {
+  transform: rotateY(180deg);
+}
+
+/* ========================================
+   Flip Card - Frente
+   ======================================== */
+
+.products__card-front {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  background: var(--dusk);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(61, 90, 128, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.products__card:hover .products__card-front,
+.products__card:focus .products__card-front {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.products__card:focus {
+  outline: 2px solid var(--peach);
+  outline-offset: 2px;
+  border-radius: var(--border-radius);
+}
+
+/* Card destacada (NORRES) */
+.products__card--featured .products__card-front {
+  border: 2px solid var(--peach);
+}
+
+/* ========================================
+   Icono de la tarjeta
+   ======================================== */
+
+.products__card-icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: var(--spacing-sm);
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition);
+  font-size: 1.8rem;
+}
+
+.products__card-icon i {
+  font-size: inherit;
+}
+
+.products__card-icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.products__card:hover .products__card-icon {
+  transform: scale(1.1);
+}
+
+.products__card-icon--featured {
+  color: var(--peach);
+}
+
+/* ========================================
+   Título de la tarjeta
+   ======================================== */
+
+.products__card-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--cyan);
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.3;
+}
+
+/* ========================================
+   Texto de la tarjeta
+   ======================================== */
+
+.products__card-text {
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  color: var(--powder);
+  line-height: 1.5;
+}
+
+/* ========================================
+   Indicador de flip
+   ======================================== */
+
+.products__card-hint {
+  position: absolute;
+  bottom: var(--spacing-sm);
+  right: var(--spacing-sm);
+  width: 18px;
+  height: 18px;
+  color: var(--powder);
+  opacity: 0.35;
+  transition: opacity var(--transition), transform var(--transition);
+  pointer-events: none;
+}
+
+.products__card-hint svg {
+  width: 18px;
+  height: 18px;
+}
+
+.products__card:hover .products__card-hint {
+  opacity: 0.7;
+  transform: rotate(30deg);
+}
+
+.products__card-hint--featured {
+  color: var(--peach);
+}
+
+/* ========================================
+   Badge de destacado
+   ======================================== */
+
+.products__card-badge {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  background: var(--peach);
+  color: #ffffff;
+  font-family: var(--font-family);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* ========================================
+   Flip Card - Reverso
+   ======================================== */
+
+.products__card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  background: var(--dusk);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(61, 90, 128, 0.4);
+  transform: rotateY(180deg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.products__card-back-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--cyan);
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.3;
+}
+
+.products__card-back-text {
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  color: var(--powder);
+  line-height: 1.4;
+  margin-bottom: var(--spacing-xs);
+}
+
+.products__card-back-list {
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  color: var(--powder);
+  text-align: left;
+  margin-bottom: var(--spacing-sm);
+  opacity: 0.9;
+}
+
+.products__card-back-list li {
+  padding: 2px 0;
+  padding-left: var(--spacing-sm);
+  position: relative;
+}
+
+.products__card-back-list li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--peach);
+  font-weight: bold;
+}
+
+/* ========================================
+   Botón "Ver más"
+   ======================================== */
+
+.products__card-btn {
+  display: inline-block;
+  background: var(--peach);
+  color: #ffffff;
+  font-family: var(--font-family);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 16px;
+  border-radius: 4px;
+  transition: transform var(--transition), box-shadow var(--transition);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.products__card-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(238, 108, 77, 0.4);
+}
+
+.products__card-btn:focus {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   Reduced motion
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .products__card-inner {
+    transition: none;
+  }
+
+  .products__card:hover .products__card-inner,
+  .products__card:focus .products__card-inner {
+    transform: none;
+  }
+
+  .products__card:hover .products__card-icon {
+    transform: none;
+  }
+}
+
+/* ========================================
+   Responsive — Tablet (768px)
+   ======================================== */
+
+@media (max-width: 768px) {
+  .products {
+    height: auto;
+    min-height: unset;
+    padding: var(--spacing-xl) 0;
+  }
+
+  .products__container {
+    height: auto;
+    padding-top: var(--spacing-xl);
+  }
+
+  .products__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+    perspective: 800px;
+  }
+
+  .products__card {
+    min-height: 250px;
+  }
+
+  .products__title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .products__subtitle {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .products__card-front,
+  .products__card-back {
+    padding: var(--spacing-sm);
+  }
+
+  .products__card-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.6rem;
+  }
+
+  .products__card-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .products__card-title {
+    font-size: 1.1rem;
+  }
+
+  .products__card-back-title {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* ========================================
+   Responsive — Móvil (480px)
+   ======================================== */
+
+@media (max-width: 480px) {
+  .products__grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    perspective: 600px;
+  }
+
+  .products__card {
+    min-height: 240px;
+  }
+
+  .products__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .products__card-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 1.4rem;
+  }
+
+  .products__card-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .products__card-title {
+    font-size: 1rem;
+  }
+
+  .products__card-text {
+    font-size: var(--font-size-sm);
+  }
+
+  .products__card-back-list {
+    display: none;
+  }
+
+  .products__card-back-text {
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+/* ========================================
+   Hint Flip — Animación introductoria
+   ======================================== */
+
+@keyframes hintFlip {
+  0%   { transform: perspective(800px) rotateY(0deg); }
+  15%  { transform: perspective(800px) rotateY(10deg); }
+  45%  { transform: perspective(800px) rotateY(65deg); }
+  65%  { transform: perspective(800px) rotateY(65deg); }
+  85%  { transform: perspective(800px) rotateY(10deg); }
+  100% { transform: perspective(800px) rotateY(0deg); }
+}
+
+.products__card--hint-flip .products__card-inner {
+  animation: hintFlip 1.2s ease-in-out forwards !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .products__card--hint-flip .products__card-inner {
+    animation: none !important;
+  }
+}

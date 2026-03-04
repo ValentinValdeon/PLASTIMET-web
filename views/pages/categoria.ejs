@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es" class="page-interna">
+<head>
+  <%- include('../partials/head') %>
+</head>
+<body>
+
+  <%- include('../partials/header') %>
+
+  <main class="categoria">
+
+    <!-- Hero de categoría (incluye breadcrumb integrado) -->
+    <div class="categoria__hero">
+      <div class="categoria__hero-inner">
+
+        <!-- Breadcrumb integrado, encima del título -->
+        <nav class="categoria__breadcrumb" aria-label="Ruta de navegación">
+          <a href="/" class="categoria__breadcrumb-link">Inicio</a>
+          <span class="categoria__breadcrumb-sep" aria-hidden="true">›</span>
+          <a href="/#products" class="categoria__breadcrumb-link">Catálogo</a>
+          <span class="categoria__breadcrumb-sep" aria-hidden="true">›</span>
+          <span class="categoria__breadcrumb-current"><%= categoria.nombre %></span>
+        </nav>
+
+        <!-- Icono + Título + Descripción -->
+        <div class="categoria__hero-body">
+          <div class="categoria__hero-icon" aria-hidden="true">
+            <i class="fa-solid <%= categoria.icono %>"></i>
+          </div>
+          <div class="categoria__hero-text">
+            <h1 class="categoria__hero-title"><%= categoria.nombre %></h1>
+            <p class="categoria__hero-desc"><%= categoria.descripcion %></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Cuerpo: Sidebar + Productos -->
+    <div class="categoria__body">
+
+      <!-- Columna de fondo del sidebar (ocupa todo el alto de la página) -->
+      <div class="categoria__sidebar-col">
+
+        <!-- Sidebar índice (sticky dentro de la columna) -->
+        <aside class="categoria__sidebar" aria-label="Índice de productos">
+        <div class="categoria__sidebar-header">Productos</div>
+        <ul class="categoria__sidebar-list" role="list">
+          <% categoria.items.forEach(function(item, idx) { %>
+            <li class="categoria__sidebar-item">
+              <a
+                href="#<%= item.id %>"
+                class="categoria__sidebar-link"
+                data-target="<%= item.id %>"
+                aria-label="Ir a <%= item.nombre %>"
+              >
+                <span class="categoria__sidebar-num" aria-hidden="true"><%= idx + 1 %></span>
+                <%= item.nombre %>
+              </a>
+            </li>
+          <% }); %>
+        </ul>
+        </aside>
+
+      </div><!-- /categoria__sidebar-col -->
+
+      <!-- Lista de productos -->
+      <section class="categoria__productos" aria-label="Lista de productos">
+
+        <!-- Navegación móvil (select dropdown, oculto en desktop) -->
+        <div class="categoria__mobile-nav">
+          <label for="producto-nav-select" class="sr-only">Ir a producto</label>
+          <select
+            id="producto-nav-select"
+            class="categoria__mobile-select"
+            aria-label="Navegar a un producto"
+            onchange="if(this.value) { history.replaceState(null, '', '#' + this.value); document.getElementById(this.value).scrollIntoView({ behavior: 'smooth', block: 'start' }); this.blur(); }"
+          >
+            <option value="">Ir a un producto…</option>
+            <% categoria.items.forEach(function(item, idx) { %>
+              <option value="<%= item.id %>"><%= idx + 1 %>. <%= item.nombre %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <p class="categoria__contador">
+          Mostrando <strong><%= categoria.items.length %></strong>
+          <%= categoria.items.length === 1 ? 'producto' : 'productos' %>
+          en <strong><%= categoria.nombre %></strong>
+        </p>
+
+        <% categoria.items.forEach(function(item, itemIdx) { %>
+
+          <article
+            class="producto-card"
+            id="<%= item.id %>"
+            aria-label="<%= item.nombre %>"
+          >
+
+            <!-- Fila principal (imagen + info) -->
+            <div class="producto-card__main">
+
+              <!-- Imagen principal -->
+              <div class="producto-card__imagen-wrap">
+                <img
+                  src="<%= item.imagen %>"
+                  alt="<%= item.nombre %>"
+                  class="producto-card__imagen"
+                  <% if (itemIdx === 0) { %>
+                  fetchpriority="high"
+                  <% } else { %>
+                  loading="lazy"
+                  <% } %>
+                  width="400"
+                  height="300"
+                >
+              </div>
+
+              <!-- Información del producto -->
+              <div class="producto-card__info">
+
+                <div>
+                  <h2 class="producto-card__titulo"><%= item.nombre %></h2>
+                  <p class="producto-card__desc"><%= item.descripcion %></p>
+
+                  <!-- Chips de especificaciones -->
+                  <div class="producto-card__specs" aria-label="Especificaciones">
+                    <% Object.entries(item.especificaciones).forEach(function(entry) { %>
+                      <span class="producto-card__spec">
+                        <span class="producto-card__spec-key"><%= entry[0] %>:</span>
+                        <%= entry[1] %>
+                      </span>
+                    <% }); %>
+                  </div>
+                </div>
+
+                <!-- Acciones de la card -->
+                <div class="producto-card__acciones">
+                  <!-- Botón toggle acordeón -->
+                  <button
+                    class="producto-card__toggle"
+                    aria-expanded="false"
+                    aria-controls="acordeon-<%= item.id %>"
+                    data-card="<%= item.id %>"
+                    type="button"
+                  >
+                    <svg class="producto-card__toggle-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                    <span class="producto-card__toggle-label-closed">Ver imágenes de uso</span>
+                    <span class="producto-card__toggle-label-open">Cerrar galería</span>
+                  </button>
+
+                  <!-- Botón Consultar -->
+                  <button
+                    class="producto-card__consultar"
+                    type="button"
+                    data-nombre="<%= item.nombre %>"
+                    data-categoria="<%= categoria.nombre %>"
+                    aria-label="Consultar sobre <%= item.nombre %>"
+                  >
+                    <i class="fas fa-envelope" aria-hidden="true"></i>
+                    Consultar
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Acordeón: galería de imágenes de uso -->
+            <div
+              class="producto-card__acordeon"
+              id="acordeon-<%= item.id %>"
+              role="region"
+              aria-label="Galería de uso de <%= item.nombre %>"
+            >
+              <div class="producto-card__acordeon-inner">
+
+                <p class="producto-card__acordeon-title">
+                  <svg class="producto-card__acordeon-title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                  Imágenes de uso habitual
+                </p>
+
+                <div class="producto-card__galeria" role="list">
+                  <% item.imagenesUso.forEach(function(imgUrl, imgIdx) { %>
+                    <div class="producto-card__galeria-item" role="listitem">
+                      <img
+                        src="<%= imgUrl %>"
+                        alt="Uso habitual <%= imgIdx + 1 %> de <%= item.nombre %>"
+                        class="producto-card__galeria-img"
+                        loading="lazy"
+                        width="600"
+                        height="400"
+                      >
+                    </div>
+                  <% }); %>
+                </div>
+
+              </div>
+            </div>
+
+          </article>
+
+        <% }); %>
+
+        <!-- Separador decorativo -->
+        <div class="consulta-separador" aria-hidden="true">
+          <span class="consulta-separador__linea"></span>
+          <span class="consulta-separador__label">
+            <i class="fas fa-envelope-open-text"></i>
+            ¿Tenés una consulta?
+          </span>
+          <span class="consulta-separador__linea"></span>
+        </div>
+
+        <!-- ========================================
+             Formulario de Consulta por Producto
+             ======================================== -->
+        <div class="consulta-form" id="consulta-form" aria-label="Formulario de consulta">
+          <div class="consulta-form__header">
+            <div class="consulta-form__header-icon" aria-hidden="true">
+              <i class="fas fa-envelope-open-text"></i>
+            </div>
+            <div>
+              <h2 class="consulta-form__title">Consultar producto</h2>
+              <p class="consulta-form__subtitle">
+                Completá el formulario y te respondemos en menos de 24hs.
+              </p>
+            </div>
+          </div>
+
+          <!-- Badge del producto seleccionado -->
+          <div class="consulta-form__badge" id="consulta-form__badge">
+            <i class="fas fa-tag consulta-form__badge-icon" aria-hidden="true"></i>
+            <span id="consulta-form__badge-nombre">Seleccioná un producto con el botón "Consultar"</span>
+          </div>
+
+          <form id="consulta-form__form" class="consulta-form__form" novalidate>
+
+            <!-- Campo oculto: nombre del producto -->
+            <input type="hidden" id="consulta__producto" name="producto" value="">
+
+            <!-- Fila 1: Nombre + Email -->
+            <div class="consulta-form__row">
+              <div class="consulta-form__field">
+                <label for="consulta__nombre" class="consulta-form__label consulta-form__label--required">
+                  Nombre
+                </label>
+                <input
+                  type="text"
+                  id="consulta__nombre"
+                  name="nombre"
+                  class="consulta-form__input"
+                  placeholder="Tu nombre completo"
+                  required
+                  minlength="2"
+                  autocomplete="name"
+                >
+                <span class="consulta-form__error" aria-live="polite">Mínimo 2 caracteres</span>
+              </div>
+
+              <div class="consulta-form__field">
+                <label for="consulta__email" class="consulta-form__label consulta-form__label--required">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="consulta__email"
+                  name="email"
+                  class="consulta-form__input"
+                  placeholder="tu@email.com"
+                  required
+                  autocomplete="email"
+                >
+                <span class="consulta-form__error" aria-live="polite">Email inválido</span>
+              </div>
+            </div>
+
+            <!-- Fila 2: Teléfono + Empresa -->
+            <div class="consulta-form__row">
+              <div class="consulta-form__field">
+                <label for="consulta__telefono" class="consulta-form__label">
+                  Teléfono
+                </label>
+                <input
+                  type="tel"
+                  id="consulta__telefono"
+                  name="telefono"
+                  class="consulta-form__input"
+                  placeholder="+54 9..."
+                  autocomplete="tel"
+                >
+                <span class="consulta-form__error" aria-live="polite">Mínimo 8 dígitos</span>
+              </div>
+
+              <div class="consulta-form__field">
+                <label for="consulta__empresa" class="consulta-form__label">
+                  Empresa
+                </label>
+                <input
+                  type="text"
+                  id="consulta__empresa"
+                  name="empresa"
+                  class="consulta-form__input"
+                  placeholder="Tu empresa (opcional)"
+                  autocomplete="organization"
+                >
+              </div>
+            </div>
+
+            <!-- Fila 3: Mensaje -->
+            <div class="consulta-form__field">
+              <label for="consulta__mensaje" class="consulta-form__label consulta-form__label--required">
+                Mensaje
+              </label>
+              <textarea
+                id="consulta__mensaje"
+                name="mensaje"
+                class="consulta-form__textarea"
+                placeholder="Contanos tu consulta, cantidad requerida, aplicación específica..."
+                required
+                minlength="10"
+              ></textarea>
+              <span class="consulta-form__error" aria-live="polite">Mínimo 10 caracteres</span>
+            </div>
+
+            <div class="consulta-form__footer">
+              <p class="consulta-form__aviso">
+                <i class="fas fa-lock" aria-hidden="true"></i>
+                Tu información es confidencial y no se comparte con terceros.
+              </p>
+              <button type="submit" class="consulta-form__submit" id="consulta-form__submit">
+                <span>Enviar consulta</span>
+                <i class="fas fa-arrow-right consulta-form__submit-icon" aria-hidden="true"></i>
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Toast de confirmación -->
+        <div class="consulta-form__toast" id="consulta-form__toast" role="alert" aria-live="polite">
+          <i class="fas fa-check-circle consulta-form__toast-icon" aria-hidden="true"></i>
+          <span class="consulta-form__toast-msg">Consulta enviada correctamente</span>
+        </div>
+
+      </section>
+
+    </div>
+    <!-- /categoria__body -->
+
+  </main>
+
+  <%- include('../partials/footer') %>
+
+  <!-- Scripts base -->
+  <script>
+    // ========================================
+    // Header: siempre sólido en páginas internas
+    // ========================================
+    (function () {
+      var header = document.getElementById('mainHeader');
+      if (!header) return;
+      // Clase dedicada para páginas con fondo claro — glassmorphism sobre azul oscuro
+      header.classList.add('header--solid');
+    }());
+
+    // ========================================
+    // Animación de aparición: cards de producto
+    // ========================================
+    (function () {
+      // Respetar preferencia del sistema
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var cards = document.querySelectorAll('.producto-card');
+      if (!cards.length) return;
+
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('producto-card--visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.08
+      });
+
+      cards.forEach(function (card) {
+        observer.observe(card);
+      });
+    }());
+
+    // ========================================
+    // Animación de aparición: separador + formulario (como unidad)
+    // ========================================
+    (function () {
+      // Respetar preferencia del sistema
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var separador = document.querySelector('.consulta-separador');
+      var form      = document.getElementById('consulta-form');
+      if (!separador && !form) return;
+
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            // Separador anima primero
+            if (separador) separador.classList.add('consulta-separador--visible');
+
+            // Form anima 150ms después, como unidad con el separador
+            setTimeout(function () {
+              if (form) form.classList.add('consulta-form--visible');
+            }, 150);
+
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.1
+      });
+
+      // Observar el separador (aparece antes en el DOM que el form)
+      if (separador) {
+        observer.observe(separador);
+      } else if (form) {
+        observer.observe(form);
+      }
+    }());
+
+    // ========================================
+    // Acordeón: toggle por botón
+    // ========================================
+    (function () {
+      var buttons = document.querySelectorAll('.producto-card__toggle');
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var cardId = btn.getAttribute('data-card');
+          var card = document.getElementById(cardId);
+          if (!card) return;
+
+          var isOpen = card.classList.contains('producto-card--open');
+
+          if (isOpen) {
+            card.classList.remove('producto-card--open');
+            btn.setAttribute('aria-expanded', 'false');
+          } else {
+            card.classList.add('producto-card--open');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+    }());
+
+    // ========================================
+    // Sidebar: resaltar ítem activo con IntersectionObserver
+    // ========================================
+    (function () {
+      var sidebarLinks = document.querySelectorAll('.categoria__sidebar-link[data-target]');
+      if (!sidebarLinks.length) return;
+
+      var cards = document.querySelectorAll('.producto-card[id]');
+      if (!cards.length) return;
+
+      var activeId = null;
+
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            activeId = entry.target.id;
+            updateActive(activeId);
+          }
+        });
+      }, {
+        rootMargin: '-80px 0px -60% 0px',
+        threshold: 0
+      });
+
+      cards.forEach(function (card) {
+        observer.observe(card);
+      });
+
+      function updateActive(id) {
+        sidebarLinks.forEach(function (link) {
+          if (link.getAttribute('data-target') === id) {
+            link.classList.add('categoria__sidebar-link--active');
+          } else {
+            link.classList.remove('categoria__sidebar-link--active');
+          }
+        });
+      }
+
+      // Scroll suave al hacer clic en el sidebar
+      sidebarLinks.forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          var targetId = link.getAttribute('data-target');
+          var target = document.getElementById(targetId);
+          if (target) {
+            history.pushState(null, '', '#' + targetId);
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    }());
+
+    // ========================================
+    // Formulario de Consulta: botón Consultar → pre-llenar + scroll
+    // ========================================
+    (function () {
+      var botonesConsultar = document.querySelectorAll('.producto-card__consultar');
+      var campoProducto    = document.getElementById('consulta__producto');
+      var badgeNombre      = document.getElementById('consulta-form__badge-nombre');
+      var badge            = document.getElementById('consulta-form__badge');
+      var formulario       = document.getElementById('consulta-form');
+      var primerCampo      = document.getElementById('consulta__nombre');
+
+      if (!botonesConsultar.length || !formulario) return;
+
+      botonesConsultar.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var nombre    = btn.getAttribute('data-nombre') || '';
+          var categoria = btn.getAttribute('data-categoria') || '';
+
+          // Pre-llenar el campo oculto y el badge visible
+          if (campoProducto) campoProducto.value = nombre;
+          if (badgeNombre)   badgeNombre.textContent = nombre + (categoria ? ' — ' + categoria : '');
+          if (badge)         badge.classList.add('consulta-form__badge--activo');
+
+          // Scroll al formulario — centrado en el viewport
+          formulario.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          // Focus en el primer campo después del scroll
+          setTimeout(function () {
+            if (primerCampo) primerCampo.focus();
+          }, 600);
+        });
+      });
+    }());
+
+    // ========================================
+    // Formulario de Consulta: validación + submit + toast
+    // ========================================
+    (function () {
+      var form    = document.getElementById('consulta-form__form');
+      var toast   = document.getElementById('consulta-form__toast');
+      var submitBtn = document.getElementById('consulta-form__submit');
+
+      if (!form) return;
+
+      // Reglas de validación por campo
+      var reglas = {
+        'consulta__nombre':   function (v) { return v.trim().length >= 2; },
+        'consulta__email':    function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); },
+        'consulta__telefono': function (v) { return v.trim() === '' || v.replace(/\D/g, '').length >= 8; },
+        'consulta__mensaje':  function (v) { return v.trim().length >= 10; }
+      };
+
+      function marcarCampo(id, valido) {
+        var campo = document.getElementById(id);
+        if (!campo) return;
+        var contenedor = campo.closest('.consulta-form__field');
+        if (!contenedor) return;
+        if (valido) {
+          contenedor.classList.remove('consulta-form__field--error');
+          contenedor.classList.add('consulta-form__field--ok');
+        } else {
+          contenedor.classList.add('consulta-form__field--error');
+          contenedor.classList.remove('consulta-form__field--ok');
+        }
+      }
+
+      // Validación en blur
+      Object.keys(reglas).forEach(function (id) {
+        var campo = document.getElementById(id);
+        if (!campo) return;
+        campo.addEventListener('blur', function () {
+          // El teléfono es opcional — solo validar si tiene contenido
+          if (id === 'consulta__telefono' && campo.value.trim() === '') {
+            marcarCampo(id, true);
+            return;
+          }
+          marcarCampo(id, reglas[id](campo.value));
+        });
+        campo.addEventListener('input', function () {
+          var contenedor = campo.closest('.consulta-form__field');
+          if (contenedor && contenedor.classList.contains('consulta-form__field--error')) {
+            marcarCampo(id, reglas[id](campo.value));
+          }
+        });
+      });
+
+      // Submit
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var todoValido = true;
+
+        Object.keys(reglas).forEach(function (id) {
+          var campo = document.getElementById(id);
+          if (!campo) return;
+          // Teléfono vacío es válido
+          if (id === 'consulta__telefono' && campo.value.trim() === '') {
+            marcarCampo(id, true);
+            return;
+          }
+          var valido = reglas[id](campo.value);
+          marcarCampo(id, valido);
+          if (!valido) todoValido = false;
+        });
+
+        if (!todoValido) return;
+
+        // Simular envío
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.querySelector('span').textContent = 'Enviando…';
+        }
+
+        setTimeout(function () {
+          // Resetear formulario
+          form.reset();
+          var badge = document.getElementById('consulta-form__badge');
+          var badgeNombre = document.getElementById('consulta-form__badge-nombre');
+          if (badge)       badge.classList.remove('consulta-form__badge--activo');
+          if (badgeNombre) badgeNombre.textContent = 'Seleccioná un producto con el botón "Consultar"';
+
+          // Limpiar clases de validación
+          Object.keys(reglas).forEach(function (id) {
+            var campo = document.getElementById(id);
+            if (!campo) return;
+            var contenedor = campo.closest('.consulta-form__field');
+            if (contenedor) {
+              contenedor.classList.remove('consulta-form__field--error', 'consulta-form__field--ok');
+            }
+          });
+
+          // Restaurar botón
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.querySelector('span').textContent = 'Enviar consulta';
+          }
+
+          // Mostrar toast
+          if (toast) {
+            toast.classList.add('consulta-form__toast--visible');
+            setTimeout(function () {
+              toast.classList.remove('consulta-form__toast--visible');
+            }, 4000);
+          }
+        }, 1500);
+      });
+    }());
+  </script>
+
+</body>
+</html>

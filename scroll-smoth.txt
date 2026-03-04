@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Demo</title>
+  <style>
+    html {
+      scroll-snap-type: y proximity;
+      scroll-behavior: smooth;
+      overflow-y: scroll;
+    }
+
+    section {
+      height: 100vh;
+      scroll-snap-align: start;
+    }
+
+    footer {
+      /* sin scroll-snap-align → queda libre */
+      min-height: 300px;
+    }
+
+    /* Estado inicial: oculto */
+    .animate {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    /* Delays opcionales para stagger */
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.25s; }
+    .delay-3 { transition-delay: 0.4s; }
+
+    /* Estado final: visible */
+    .animate.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <section>
+    <div class="animate">Título</div>
+    <div class="animate delay-1">Subtítulo</div>
+    <div class="animate delay-2">Botón</div>
+  </section>
+
+  <section>
+    <div class="animate">Contenido sección 2</div>
+  </section>
+
+  <footer>
+    <div class="animate">Footer</div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.2,           // se activa cuando el 20% del elemento es visible
+      rootMargin: '0px 0px -50px 0px'  // evita disparos prematuros cerca del borde
+    });
+
+    // Observa todos los elementos con clase .animate
+    document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!-- Globe.gl JS -->
+<script src="https://cdn.jsdelivr.net/npm/globe.gl@2.41.0/dist/globe.gl.min.js"></script>
+
+<!-- Swiper.js -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<!-- JavaScript del cliente (debe cargar después de las librerías) -->
+<script src="/js/main.js"></script>
+
+<!-- Inicializar Swiper Hero Carousel -->
+<script>
+  const heroSwiper = new Swiper('.hero__carousel', {
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
+    },
+    speed: 1000,
+    effect: 'slide',
+    loop: true,
+    allowTouchMove: false,
+    noSwiping: true,
+  });
+</script>
+
+<!-- Smooth Scroll with reduced speed (COMENTADO PARA DEBUG)
+<script>
+  // (function () {
+  //   let scrollSpeed = 5;
+  //   let targetScroll = window.scrollY;
+  //   let currentScroll = window.scrollY;
+  //   let isScrolling = false;
+
+  //   function updateScroll() {
+  //     if (Math.abs(targetScroll - currentScroll) > 0.5) {
+  //       currentScroll += (targetScroll - currentScroll) * 0.08;
+  //       window.scrollTo(0, currentScroll);
+  //       requestAnimationFrame(updateScroll);
+  //     } else {
+  //       isScrolling = false;
+  //     }
+  //   }
+
+  //   window.addEventListener('wheel', function (e) {
+  //     e.preventDefault();
+  //     targetScroll += e.deltaY * scrollSpeed;
+  //     targetScroll = Math.max(0, Math.min(targetScroll, document.documentElement.scrollHeight - window.innerHeight));
+
+  //     if (!isScrolling) {
+  //       isScrolling = true;
+  //       updateScroll();
+  //     }
+  //   }, { passive: false });
+
+  //   window.addEventListener('scroll', function () {
+  //     if (!isScrolling) {
+  //       currentScroll = window.scrollY;
+  //       targetScroll = window.scrollY;
+  //     }
+  //   });
+  // })();
+</script>

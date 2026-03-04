@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Paletas Extendido</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Saira:wght@300;400;500;600&family=Saira+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* ── ORIGINALES ── */
+  --jet:    #293241;
+  --dusk:   #3d5a80;
+  --powder: #98c1d9;
+  --cyan:   #e0fbfc;
+  --peach:  #ee6c4d;
+
+  /* ── EXTENSIONES OSCURAS ── */
+  --abyss:  #1a2130;   /* más oscuro que jet, para secciones "extra profundas" */
+  --void:   #111820;   /* casi negro, para fondos máximos */
+  --slate:  #3a4a5e;   /* entre jet y dusk, nueva superficie media */
+
+  /* ── EXTENSIONES CLARAS ── */
+  --mist:   #c8eef0;   /* cyan más apagado, para fondos muy suaves */
+  --frost:  #f0fafa;   /* casi blanco con tinte cyan, para áreas institucionales */
+  --haze:   #b8d8e8;   /* powder más claro, para texto tertiary */
+
+  /* ── EXTENSIONES DE ACENTO ── */
+  --ember:  #c85a38;   /* peach más oscuro, para hover dark o variante profunda */
+  --blush:  #f48a6a;   /* peach más claro, para badges suaves o ilustraciones */
+  --sand:   #f0c8a0;   /* cálido neutro, para tags light o highlights sutiles */
+
+  /* ── NEUTROS DEL SISTEMA ── */
+  --wire:   #4a5a6e;   /* borde medio, entre dusk y powder */
+  --smoke:  #6a7e8e;   /* texto muted claro sobre fondos oscuros */
+  --chalk:  #d8eaf0;   /* texto muy suave sobre oscuros, alternativa a powder */
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#111820;font-family:'Saira',sans-serif;color:var(--powder)}
+
+/* ── NAV ── */
+.nav{position:sticky;top:0;z-index:500;background:rgba(26,33,48,.97);backdrop-filter:blur(16px);border-bottom:1px solid rgba(224,251,252,.06);padding:.8rem 4vw;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'Saira Condensed',sans-serif;font-size:.7rem;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan)}
+.nav-sub{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--powder);opacity:.35}
+
+/* ── SECTIONS ── */
+.page-section{padding:5rem 5vw}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;color:var(--cyan);letter-spacing:-.02em;margin-bottom:.5rem}
+.section-desc{font-size:.85rem;color:var(--powder);opacity:.6;line-height:1.8;max-width:640px;margin-bottom:3rem;font-weight:300}
+
+/* ── PALETTE CARD ── */
+.pal-group{margin-bottom:4rem}
+.pal-group-title{font-family:'Saira Condensed',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--powder);opacity:.35;margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem}
+.pal-group-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.05)}
+.pal-row{display:flex;gap:0;flex-wrap:wrap}
+.pal-swatch{flex:1;min-width:120px;padding:1.4rem 1.2rem 1.2rem;position:relative;cursor:pointer;transition:flex .3s}
+.pal-swatch:hover{flex:1.6}
+.pal-name{font-family:'Saira Condensed',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.3rem;opacity:.6}
+.pal-hex{font-size:.75rem;font-weight:600;letter-spacing:.04em;margin-bottom:.2rem}
+.pal-role{font-size:.65rem;font-weight:300;opacity:.55;line-height:1.5}
+.pal-copy-hint{position:absolute;bottom:.6rem;right:.8rem;font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;opacity:.3}
+.pal-swatch:hover .pal-copy-hint{opacity:.7}
+
+/* ── COMBO SECTION ── */
+.combo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+.combo-card{border-radius:2px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.combo-card:hover{transform:translateY(-3px);box-shadow:0 20px 48px rgba(0,0,0,.5)}
+.combo-preview{height:180px;padding:1.8rem;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.combo-preview-title{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.combo-preview-sub{font-size:.72rem;font-weight:300;opacity:.65;line-height:1.6}
+.combo-preview-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.45rem 1rem;font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;width:fit-content}
+.combo-badge{position:absolute;top:1.2rem;right:1.2rem;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;padding:.25rem .6rem;font-weight:700;opacity:.7}
+.combo-info{padding:1.2rem 1.4rem;border-top:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;gap:.5rem;background:rgba(0,0,0,.2)}
+.combo-name{font-family:'Saira Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--powder);opacity:.6}
+.combo-vars{display:flex;gap:.4rem;flex-wrap:wrap}
+.combo-var{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;padding:.18rem .5rem;border-radius:100px;font-weight:600}
+
+/* ── TOKEN TABLE ── */
+.token-table{width:100%;border-collapse:collapse}
+.token-table th{font-family:'Saira Condensed',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--powder);opacity:.3;text-align:left;padding:.7rem 1rem;border-bottom:1px solid rgba(255,255,255,.06)}
+.token-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);font-size:.82rem;vertical-align:middle}
+.token-table tr:hover td{background:rgba(255,255,255,.02)}
+.td-swatch{width:2.2rem;height:2.2rem;border-radius:3px;display:inline-block}
+.td-var{font-family:'Saira Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.08em;color:var(--cyan);opacity:.7}
+.td-hex{font-size:.75rem;letter-spacing:.04em;color:var(--powder);opacity:.5;font-family:'Saira',monospace}
+.td-role{font-size:.78rem;color:var(--powder);opacity:.5;font-weight:300}
+.td-use{font-size:.72rem;color:var(--powder);opacity:.35;font-weight:300;max-width:260px}
+.td-tag{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;border-radius:100px;font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+
+/* ── USAGE DEMO ── */
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.demo-block{padding:2rem;position:relative;overflow:hidden}
+.demo-label{position:absolute;top:.7rem;right:.8rem;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;font-weight:700;opacity:.4}
+.demo-h{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.5rem}
+.demo-p{font-size:.82rem;font-weight:300;line-height:1.75;opacity:.7;margin-bottom:1.2rem}
+.demo-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1.2rem;font-family:'Saira',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border:none;margin-right:.5rem}
+.demo-btn-ghost{background:transparent}
+.demo-card{padding:1.2rem;margin-top:1rem}
+.demo-card p{font-size:.8rem;font-weight:300;opacity:.65}
+
+/* ── DIVIDER ── */
+.div{padding:.85rem 5vw;background:rgba(255,255,255,.02);border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.dn{font-family:'Saira Condensed',sans-serif;font-size:.65rem;font-weight:900;color:var(--dusk);letter-spacing:.1em}
+.dt{font-family:'Saira Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--powder);opacity:.5}
+
+/* ── GRADIENT DEMOS ── */
+.grad-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.8rem;margin-bottom:1.5rem}
+.grad-chip{height:80px;border-radius:3px;position:relative;overflow:hidden;cursor:pointer;transition:transform .2s}
+.grad-chip:hover{transform:scaleY(1.04)}
+.grad-chip-label{position:absolute;bottom:.6rem;left:.8rem;font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.5)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo">Sistema de Paletas Extendido</span>
+  <span class="nav-sub">Extensiones coherentes con la paleta de marca</span>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 1 — PALETA ORIGINAL + EXTENSIONES
+══════════════════════════════════════════════ -->
+<section class="page-section" style="background:var(--void)">
+  <h2 class="section-title">Paleta base y extensiones</h2>
+  <p class="section-desc">Los 5 colores originales más 12 extensiones derivadas. Todos siguen la misma temperatura fría-neutra con el acento cálido peach. Podés usarlos en cualquier combinación con las reglas de abajo.</p>
+
+  <!-- ORIGINALES -->
+  <div class="pal-group">
+    <div class="pal-group-title">Paleta original (tus 5 colores)</div>
+    <div class="pal-row">
+      <div class="pal-swatch" style="background:#293241;color:#e0fbfc">
+        <div class="pal-name">Jet Black</div>
+        <div class="pal-hex">#293241</div>
+        <div class="pal-role">Fondo principal oscuro</div>
+        <div class="pal-copy-hint">original</div>
+      </div>
+      <div class="pal-swatch" style="background:#3d5a80;color:#e0fbfc">
+        <div class="pal-name">Dusk Blue</div>
+        <div class="pal-hex">#3d5a80</div>
+        <div class="pal-role">Superficie elevada / fondo medio</div>
+        <div class="pal-copy-hint">original</div>
+      </div>
+      <div class="pal-swatch" style="background:#98c1d9;color:#293241">
+        <div class="pal-name">Powder Blue</div>
+        <div class="pal-hex">#98c1d9</div>
+        <div class="pal-role">Texto cuerpo / secundario</div>
+        <div class="pal-copy-hint">original</div>
+      </div>
+      <div class="pal-swatch" style="background:#e0fbfc;color:#293241">
+        <div class="pal-name">Light Cyan</div>
+        <div class="pal-hex">#e0fbfc</div>
+        <div class="pal-role">Títulos / superficie clara</div>
+        <div class="pal-copy-hint">original</div>
+      </div>
+      <div class="pal-swatch" style="background:#ee6c4d;color:#fff">
+        <div class="pal-name">Burnt Peach</div>
+        <div class="pal-hex">#ee6c4d</div>
+        <div class="pal-role">Acento · CTA · hover</div>
+        <div class="pal-copy-hint">original</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXTENSIONES OSCURAS -->
+  <div class="pal-group">
+    <div class="pal-group-title">Extensiones oscuras — más profundidad</div>
+    <div class="pal-row">
+      <div class="pal-swatch" style="background:#1a2130;color:#98c1d9">
+        <div class="pal-name">Abyss</div>
+        <div class="pal-hex">#1a2130</div>
+        <div class="pal-role">Más oscuro que jet. Para secciones hero o fondos de página.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+      <div class="pal-swatch" style="background:#111820;color:#98c1d9">
+        <div class="pal-name">Void</div>
+        <div class="pal-hex">#111820</div>
+        <div class="pal-role">Casi negro. Terminal, overlays, modales profundos.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+      <div class="pal-swatch" style="background:#3a4a5e;color:#e0fbfc">
+        <div class="pal-name">Slate</div>
+        <div class="pal-hex">#3a4a5e</div>
+        <div class="pal-role">Entre jet y dusk. Nueva superficie media para tarjetas sobre dusk.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+      <div class="pal-swatch" style="background:#2e4460;color:#e0fbfc">
+        <div class="pal-name">Dusk Dark</div>
+        <div class="pal-hex">#2e4460</div>
+        <div class="pal-role">Dusk más oscuro. Para hover de dusk, paneles secundarios.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+      <div class="pal-swatch" style="background:#507090;color:#e0fbfc">
+        <div class="pal-name">Dusk Light</div>
+        <div class="pal-hex">#507090</div>
+        <div class="pal-role">Dusk más claro. Separadores con presencia, íconos activos.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXTENSIONES CLARAS -->
+  <div class="pal-group">
+    <div class="pal-group-title">Extensiones claras — más luminosidad</div>
+    <div class="pal-row">
+      <div class="pal-swatch" style="background:#c8eef0;color:#293241">
+        <div class="pal-name">Mist</div>
+        <div class="pal-hex">#c8eef0</div>
+        <div class="pal-role">Cyan apagado. Fondos muy suaves, alternativa a light-cyan.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+      <div class="pal-swatch" style="background:#f0fafa;color:#293241">
+        <div class="pal-name">Frost</div>
+        <div class="pal-hex">#f0fafa</div>
+        <div class="pal-role">Casi blanco con tinte cyan. Áreas institucionales, tarjetas luz max.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+      <div class="pal-swatch" style="background:#b8d8e8;color:#293241">
+        <div class="pal-name">Haze</div>
+        <div class="pal-hex">#b8d8e8</div>
+        <div class="pal-role">Powder más claro. Texto terciario, placeholders con más suavidad.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXTENSIONES DE ACENTO -->
+  <div class="pal-group">
+    <div class="pal-group-title">Extensiones de acento peach</div>
+    <div class="pal-row">
+      <div class="pal-swatch" style="background:#c85a38;color:#fff">
+        <div class="pal-name">Ember</div>
+        <div class="pal-hex">#c85a38</div>
+        <div class="pal-role">Peach oscuro. Hover sobre botones, estados pressed, acentos deep.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+      <div class="pal-swatch" style="background:#f48a6a;color:#fff">
+        <div class="pal-name">Blush</div>
+        <div class="pal-hex">#f48a6a</div>
+        <div class="pal-role">Peach claro. Badges suaves, íconos secundarios, tags light.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+      <div class="pal-swatch" style="background:#f0c8a0;color:#293241">
+        <div class="pal-name">Sand</div>
+        <div class="pal-hex">#f0c8a0</div>
+        <div class="pal-role">Cálido neutro. Highlights sutiles, decoración sobre fondos oscuros.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEUTROS -->
+  <div class="pal-group">
+    <div class="pal-group-title">Neutros del sistema</div>
+    <div class="pal-row">
+      <div class="pal-swatch" style="background:#4a5a6e;color:#e0fbfc">
+        <div class="pal-name">Wire</div>
+        <div class="pal-hex">#4a5a6e</div>
+        <div class="pal-role">Borde medio. Entre dusk y powder. Para separadores con presencia.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+      <div class="pal-swatch" style="background:#6a7e8e;color:#fff">
+        <div class="pal-name">Smoke</div>
+        <div class="pal-hex">#6a7e8e</div>
+        <div class="pal-role">Texto muted claro. Para etiquetas, placeholders, texto muy secundario.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+      <div class="pal-swatch" style="background:#d8eaf0;color:#293241">
+        <div class="pal-name">Chalk</div>
+        <div class="pal-hex">#d8eaf0</div>
+        <div class="pal-role">Alternativa a powder sobre fondos oscuros cuando powder es muy saturado.</div>
+        <div class="pal-copy-hint">nueva</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 2 — COMBINACIONES DE SECCIÓN
+══════════════════════════════════════════════ -->
+<section class="page-section" style="background:#1a2130">
+  <h2 class="section-title">Combinaciones de sección</h2>
+  <p class="section-desc">14 configuraciones listas para usar en cualquier sección de la landing. Cada una define fondo, superficie (tarjetas), texto principal, texto secundario y acento.</p>
+
+  <div class="combo-grid">
+
+    <!-- A — ya la tenés -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#293241">
+        <div>
+          <div class="combo-preview-title" style="color:#e0fbfc">Automatización<br>de precisión.</div>
+          <div class="combo-preview-sub" style="color:#98c1d9">Para operaciones que no pueden fallar.</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#ee6c4d;color:#fff">Ver servicios →</button>
+        <div class="combo-badge" style="background:rgba(238,108,77,.15);color:#ee6c4d;border:1px solid rgba(238,108,77,.2)">JET / CYAN</div>
+      </div>
+      <div class="combo-info" style="background:#1e2a3a">
+        <div class="combo-name">A — Oscuro Dramático (original)</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#293241;color:#e0fbfc">jet fondo</span>
+          <span class="combo-var" style="background:#3d5a80;color:#e0fbfc">dusk card</span>
+          <span class="combo-var" style="background:#e0fbfc;color:#293241">cyan título</span>
+          <span class="combo-var" style="background:#98c1d9;color:#293241">powder body</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- B — ya la tenés -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#3d5a80">
+        <div>
+          <div class="combo-preview-title" style="color:#fff">Tu operación,<br>nuestra ingeniería.</div>
+          <div class="combo-preview-sub" style="color:#98c1d9">Soluciones para LATAM.</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#ee6c4d;color:#fff">Cotizar →</button>
+        <div class="combo-badge" style="background:rgba(224,251,252,.08);color:#e0fbfc;border:1px solid rgba(224,251,252,.1)">DUSK / CYAN</div>
+      </div>
+      <div class="combo-info" style="background:#1e2a3a">
+        <div class="combo-name">B — Azul Institucional (original)</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#3d5a80;color:#fff">dusk fondo</span>
+          <span class="combo-var" style="background:#e0fbfc;color:#293241">cyan card</span>
+          <span class="combo-var" style="background:#fff;color:#293241">blanco título</span>
+          <span class="combo-var" style="background:#98c1d9;color:#293241">powder body</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- C — NUEVA -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#1a2130">
+        <div>
+          <div class="combo-preview-title" style="color:#e0fbfc">Infraestructura<br>crítica.</div>
+          <div class="combo-preview-sub" style="color:#b8d8e8">Diseñada para no fallar jamás.</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#ee6c4d;color:#fff">Explorar →</button>
+        <div class="combo-badge" style="background:rgba(238,108,77,.12);color:#ee6c4d;border:1px solid rgba(238,108,77,.15)">ABYSS / HAZE</div>
+      </div>
+      <div class="combo-info" style="background:#111820">
+        <div class="combo-name">C — Ultra Profundo · para secciones hero</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#1a2130;color:#e0fbfc">abyss fondo</span>
+          <span class="combo-var" style="background:#293241;color:#e0fbfc">jet card</span>
+          <span class="combo-var" style="background:#e0fbfc;color:#293241">cyan título</span>
+          <span class="combo-var" style="background:#b8d8e8;color:#293241">haze body</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- D — NUEVA -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#111820">
+        <div>
+          <div class="combo-preview-title" style="color:#c8eef0">Monitoreo<br>en tiempo real.</div>
+          <div class="combo-preview-sub" style="color:#6a7e8e">Datos de planta al instante.</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#ee6c4d;color:#fff">Dashboard →</button>
+        <div class="combo-badge" style="background:rgba(200,238,240,.06);color:#c8eef0;border:1px solid rgba(200,238,240,.1)">VOID / MIST</div>
+      </div>
+      <div class="combo-info" style="background:#0a1018">
+        <div class="combo-name">D — Void / Mist · para secciones tech oscuras</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#111820;color:#c8eef0">void fondo</span>
+          <span class="combo-var" style="background:#1a2130;color:#c8eef0">abyss card</span>
+          <span class="combo-var" style="background:#c8eef0;color:#293241">mist título</span>
+          <span class="combo-var" style="background:#6a7e8e;color:#fff">smoke body</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- E — NUEVA -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#2e4460">
+        <div>
+          <div class="combo-preview-title" style="color:#e0fbfc">Ingeniería<br>eléctrica MT/AT.</div>
+          <div class="combo-preview-sub" style="color:#98c1d9">Alta y media tensión para industria.</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#ee6c4d;color:#fff">Ver más →</button>
+        <div class="combo-badge" style="background:rgba(224,251,252,.07);color:#e0fbfc;border:1px solid rgba(224,251,252,.08)">DUSK DARK</div>
+      </div>
+      <div class="combo-info" style="background:#1e2a3a">
+        <div class="combo-name">E — Dusk Dark · variante de la azul institucional</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#2e4460;color:#e0fbfc">dusk-d fondo</span>
+          <span class="combo-var" style="background:#3a4a5e;color:#e0fbfc">slate card</span>
+          <span class="combo-var" style="background:#e0fbfc;color:#293241">cyan título</span>
+          <span class="combo-var" style="background:#98c1d9;color:#293241">powder body</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- F — NUEVA -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#3a4a5e">
+        <div>
+          <div class="combo-preview-title" style="color:#e0fbfc">Ciberseguridad<br>operacional.</div>
+          <div class="combo-preview-sub" style="color:#b8d8e8">Protección de redes OT/SCADA.</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#ee6c4d;color:#fff">Consultar →</button>
+        <div class="combo-badge" style="background:rgba(238,108,77,.1);color:#f48a6a;border:1px solid rgba(238,108,77,.15)">SLATE</div>
+      </div>
+      <div class="combo-info" style="background:#1e2a3a">
+        <div class="combo-name">F — Slate · superficie media nueva</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#3a4a5e;color:#e0fbfc">slate fondo</span>
+          <span class="combo-var" style="background:#2e4460;color:#e0fbfc">dusk-d card</span>
+          <span class="combo-var" style="background:#e0fbfc;color:#293241">cyan título</span>
+          <span class="combo-var" style="background:#b8d8e8;color:#293241">haze body</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- G — NUEVA -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#e0fbfc">
+        <div>
+          <div class="combo-preview-title" style="color:#293241">Certificaciones<br>y estándares.</div>
+          <div class="combo-preview-sub" style="color:#3d5a80">ISO 9001 · ISO 27001 · ATEX</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#ee6c4d;color:#fff">Descargar →</button>
+        <div class="combo-badge" style="background:rgba(61,90,128,.1);color:#3d5a80;border:1px solid rgba(61,90,128,.15)">CYAN FULL</div>
+      </div>
+      <div class="combo-info" style="background:#1e2a3a">
+        <div class="combo-name">G — Cyan Full · sección institucional muy clara</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#e0fbfc;color:#293241">cyan fondo</span>
+          <span class="combo-var" style="background:#fff;color:#293241">blanco card</span>
+          <span class="combo-var" style="background:#293241;color:#e0fbfc">jet título</span>
+          <span class="combo-var" style="background:#3d5a80;color:#fff">dusk body</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- H — NUEVA -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#f0fafa">
+        <div>
+          <div class="combo-preview-title" style="color:#293241">Casos de éxito<br>documentados.</div>
+          <div class="combo-preview-sub" style="color:#4a5a6e">420 proyectos · 16 países</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#293241;color:#e0fbfc">Ver proyectos →</button>
+        <div class="combo-badge" style="background:rgba(61,90,128,.08);color:#3d5a80;border:1px solid rgba(61,90,128,.1)">FROST</div>
+      </div>
+      <div class="combo-info" style="background:#1e2a3a">
+        <div class="combo-name">H — Frost · la más clara del sistema</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#f0fafa;color:#293241">frost fondo</span>
+          <span class="combo-var" style="background:#e0fbfc;color:#293241">cyan card</span>
+          <span class="combo-var" style="background:#293241;color:#e0fbfc">jet título</span>
+          <span class="combo-var" style="background:#4a5a6e;color:#fff">wire body</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- I — NUEVA: JET + MIST -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#293241">
+        <div>
+          <div class="combo-preview-title" style="color:#c8eef0">Mantenimiento<br>predictivo.</div>
+          <div class="combo-preview-sub" style="color:#b8d8e8">Reducí el downtime con datos.</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#f48a6a;color:#fff">Más info →</button>
+        <div class="combo-badge" style="background:rgba(200,238,240,.08);color:#c8eef0;border:1px solid rgba(200,238,240,.1)">JET / MIST</div>
+      </div>
+      <div class="combo-info" style="background:#1e2a3a">
+        <div class="combo-name">I — Jet / Mist · variante suave del oscuro</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#293241;color:#e0fbfc">jet fondo</span>
+          <span class="combo-var" style="background:#3d5a80;color:#e0fbfc">dusk card</span>
+          <span class="combo-var" style="background:#c8eef0;color:#293241">mist título</span>
+          <span class="combo-var" style="background:#b8d8e8;color:#293241">haze body</span>
+          <span class="combo-var" style="background:#f48a6a;color:#fff">blush CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- J — NUEVA: ABYSS + PEACH FUERTE -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#1a2130">
+        <div>
+          <div class="combo-preview-title" style="color:#f0c8a0">24 años de<br>experiencia.</div>
+          <div class="combo-preview-sub" style="color:#6a7e8e">Desde 2001 en LATAM.</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#ee6c4d;color:#fff">Conocernos →</button>
+        <div class="combo-badge" style="background:rgba(240,200,160,.08);color:#f0c8a0;border:1px solid rgba(240,200,160,.12)">ABYSS / SAND</div>
+      </div>
+      <div class="combo-info" style="background:#111820">
+        <div class="combo-name">J — Abyss / Sand · cálido sobre muy oscuro</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#1a2130;color:#e0fbfc">abyss fondo</span>
+          <span class="combo-var" style="background:#293241;color:#e0fbfc">jet card</span>
+          <span class="combo-var" style="background:#f0c8a0;color:#293241">sand título</span>
+          <span class="combo-var" style="background:#6a7e8e;color:#fff">smoke body</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- K — NUEVA: SLATE + FROST (inverso) -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#3a4a5e">
+        <div>
+          <div class="combo-preview-title" style="color:#f0fafa">IoT Industrial<br>conectado.</div>
+          <div class="combo-preview-sub" style="color:#d8eaf0">Sensores · MQTT · Edge computing</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#ee6c4d;color:#fff">Demo →</button>
+        <div class="combo-badge" style="background:rgba(240,250,250,.07);color:#f0fafa;border:1px solid rgba(240,250,250,.1)">SLATE / FROST</div>
+      </div>
+      <div class="combo-info" style="background:#1e2a3a">
+        <div class="combo-name">K — Slate / Frost · frío desaturado</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#3a4a5e;color:#f0fafa">slate fondo</span>
+          <span class="combo-var" style="background:#2e4460;color:#f0fafa">dusk-d card</span>
+          <span class="combo-var" style="background:#f0fafa;color:#293241">frost título</span>
+          <span class="combo-var" style="background:#d8eaf0;color:#293241">chalk body</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- L — NUEVA: DUSK-LIGHT FONDO -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#507090">
+        <div>
+          <div class="combo-preview-title" style="color:#f0fafa">Presencia<br>en toda LATAM.</div>
+          <div class="combo-preview-sub" style="color:#d8eaf0">Buenos Aires · Santiago · Bogotá · Lima</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#ee6c4d;color:#fff">Oficinas →</button>
+        <div class="combo-badge" style="background:rgba(240,250,250,.08);color:#f0fafa;border:1px solid rgba(240,250,250,.1)">DUSK-L / CHALK</div>
+      </div>
+      <div class="combo-info" style="background:#1e2a3a">
+        <div class="combo-name">L — Dusk Light · más aireado que dusk</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#507090;color:#fff">dusk-l fondo</span>
+          <span class="combo-var" style="background:#3d5a80;color:#e0fbfc">dusk card</span>
+          <span class="combo-var" style="background:#f0fafa;color:#293241">frost título</span>
+          <span class="combo-var" style="background:#d8eaf0;color:#293241">chalk body</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- M — NUEVA: MIST FONDO MEDIO -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#c8eef0">
+        <div>
+          <div class="combo-preview-title" style="color:#293241">Equipo de<br>ingenieros.</div>
+          <div class="combo-preview-sub" style="color:#3d5a80">Especializados en industria pesada.</div>
+        </div>
+        <button class="combo-preview-btn" style="background:#ee6c4d;color:#fff">Equipo →</button>
+        <div class="combo-badge" style="background:rgba(61,90,128,.1);color:#3d5a80;border:1px solid rgba(61,90,128,.12)">MIST</div>
+      </div>
+      <div class="combo-info" style="background:#1e2a3a">
+        <div class="combo-name">M — Mist · más suave que light-cyan</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#c8eef0;color:#293241">mist fondo</span>
+          <span class="combo-var" style="background:#e0fbfc;color:#293241">cyan card</span>
+          <span class="combo-var" style="background:#293241;color:#e0fbfc">jet título</span>
+          <span class="combo-var" style="background:#3d5a80;color:#fff">dusk body</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach CTA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- N — NUEVA: JET + SAND HEADING (cálido) -->
+    <div class="combo-card">
+      <div class="combo-preview" style="background:#293241">
+        <div>
+          <div class="combo-preview-title" style="color:#ee6c4d">420+ proyectos<br>ejecutados.</div>
+          <div class="combo-preview-sub" style="color:#98c1d9">En 16 países de América Latina.</div>
+        </div>
+        <button class="combo-preview-btn" style="background:transparent;color:#ee6c4d;border:1px solid rgba(238,108,77,.35)">Ver casos →</button>
+        <div class="combo-badge" style="background:rgba(238,108,77,.1);color:#ee6c4d;border:1px solid rgba(238,108,77,.15)">JET / PEACH HEADING</div>
+      </div>
+      <div class="combo-info" style="background:#1e2a3a">
+        <div class="combo-name">N — Peach como heading · para stats/números</div>
+        <div class="combo-vars">
+          <span class="combo-var" style="background:#293241;color:#e0fbfc">jet fondo</span>
+          <span class="combo-var" style="background:#3a4a5e;color:#e0fbfc">slate card</span>
+          <span class="combo-var" style="background:#ee6c4d;color:#fff">peach título</span>
+          <span class="combo-var" style="background:#98c1d9;color:#293241">powder body</span>
+          <span class="combo-var" style="background:transparent;color:#ee6c4d;border:1px solid #ee6c4d">ghost CTA</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 3 — TABLA DE TOKENS CSS
+══════════════════════════════════════════════ -->
+<section class="page-section" style="background:#1e2630">
+  <h2 class="section-title">Variables CSS — sistema completo</h2>
+  <p class="section-desc">Copiá este bloque al inicio de tu CSS. Todos los colores del sistema en un solo lugar.</p>
+
+  <table class="token-table">
+    <thead>
+      <tr>
+        <th>Muestra</th><th>Variable</th><th>Hex</th><th>Nombre</th><th>Uso recomendado</th><th>Tipo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="td-swatch" style="background:#293241;border:1px solid rgba(255,255,255,.1)"></span></td><td><span class="td-var">--jet</span></td><td class="td-hex">#293241</td><td class="td-role">Jet Black</td><td class="td-use">Fondo principal oscuro</td><td><span class="td-tag" style="background:rgba(152,193,217,.1);color:#98c1d9">base</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#3d5a80"></span></td><td><span class="td-var">--dusk</span></td><td class="td-hex">#3d5a80</td><td class="td-role">Dusk Blue</td><td class="td-use">Superficie elevada, tarjetas sobre jet</td><td><span class="td-tag" style="background:rgba(152,193,217,.1);color:#98c1d9">base</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#98c1d9"></span></td><td><span class="td-var">--powder</span></td><td class="td-hex">#98c1d9</td><td class="td-role">Powder Blue</td><td class="td-use">Texto body, párrafos</td><td><span class="td-tag" style="background:rgba(152,193,217,.1);color:#98c1d9">base</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#e0fbfc"></span></td><td><span class="td-var">--cyan</span></td><td class="td-hex">#e0fbfc</td><td class="td-role">Light Cyan</td><td class="td-use">Headings oscuros, superficie clara</td><td><span class="td-tag" style="background:rgba(152,193,217,.1);color:#98c1d9">base</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#ee6c4d"></span></td><td><span class="td-var">--peach</span></td><td class="td-hex">#ee6c4d</td><td class="td-role">Burnt Peach</td><td class="td-use">CTA, botones, acentos, hover</td><td><span class="td-tag" style="background:rgba(152,193,217,.1);color:#98c1d9">base</span></td></tr>
+      <tr style="border-top:2px solid rgba(255,255,255,.06)"><td><span class="td-swatch" style="background:#1a2130"></span></td><td><span class="td-var">--abyss</span></td><td class="td-hex">#1a2130</td><td class="td-role">Abyss</td><td class="td-use">Hero secciones, fondo más profundo que jet</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#111820;border:1px solid rgba(255,255,255,.08)"></span></td><td><span class="td-var">--void</span></td><td class="td-hex">#111820</td><td class="td-role">Void</td><td class="td-use">Terminal, overlays, modales máximos</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#3a4a5e"></span></td><td><span class="td-var">--slate</span></td><td class="td-hex">#3a4a5e</td><td class="td-role">Slate</td><td class="td-use">Superficie media entre jet y dusk</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#2e4460"></span></td><td><span class="td-var">--dusk-d</span></td><td class="td-hex">#2e4460</td><td class="td-role">Dusk Dark</td><td class="td-use">Variante oscura de dusk, hover de dusk</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#507090"></span></td><td><span class="td-var">--dusk-l</span></td><td class="td-hex">#507090</td><td class="td-role">Dusk Light</td><td class="td-use">Variante clara de dusk, separadores</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#c8eef0"></span></td><td><span class="td-var">--mist</span></td><td class="td-hex">#c8eef0</td><td class="td-role">Mist</td><td class="td-use">Cyan apagado, fondo suave alternativo</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#f0fafa"></span></td><td><span class="td-var">--frost</span></td><td class="td-hex">#f0fafa</td><td class="td-use">Frost</td><td class="td-use">Blanco con tinte, tarjetas institucionales max</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#b8d8e8"></span></td><td><span class="td-var">--haze</span></td><td class="td-hex">#b8d8e8</td><td class="td-role">Haze</td><td class="td-use">Texto terciario, powder más suave</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#c85a38"></span></td><td><span class="td-var">--ember</span></td><td class="td-hex">#c85a38</td><td class="td-role">Ember</td><td class="td-use">Hover de peach, estado pressed</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#f48a6a"></span></td><td><span class="td-var">--blush</span></td><td class="td-hex">#f48a6a</td><td class="td-role">Blush</td><td class="td-use">Badges suaves, variante clara de peach</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#f0c8a0"></span></td><td><span class="td-var">--sand</span></td><td class="td-hex">#f0c8a0</td><td class="td-role">Sand</td><td class="td-use">Highlights cálidos sobre oscuros</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#4a5a6e"></span></td><td><span class="td-var">--wire</span></td><td class="td-hex">#4a5a6e</td><td class="td-role">Wire</td><td class="td-use">Bordes con presencia, separadores</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#6a7e8e"></span></td><td><span class="td-var">--smoke</span></td><td class="td-hex">#6a7e8e</td><td class="td-role">Smoke</td><td class="td-use">Texto muted, placeholders visibles</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+      <tr><td><span class="td-swatch" style="background:#d8eaf0"></span></td><td><span class="td-var">--chalk</span></td><td class="td-hex">#d8eaf0</td><td class="td-role">Chalk</td><td class="td-use">Alternativa a powder, más luminosa</td><td><span class="td-tag" style="background:rgba(238,108,77,.1);color:#ee6c4d">nueva</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 4 — REGLAS DE USO
+══════════════════════════════════════════════ -->
+<section class="page-section" style="background:#293241">
+  <h2 class="section-title">Reglas del sistema</h2>
+  <p class="section-desc">Cómo combinar los colores para que todo siga cohesivo cuando agregás nuevas secciones.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:0">
+
+    <!-- REGLA 1 -->
+    <div style="padding:2rem;background:#3d5a80;border-left:3px solid #ee6c4d">
+      <div style="font-family:'Saira Condensed',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#ee6c4d;margin-bottom:.7rem">Regla 01</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:#e0fbfc;margin-bottom:.6rem">Peach siempre es acento</div>
+      <div style="font-size:.82rem;color:#98c1d9;opacity:.75;line-height:1.75;font-weight:300">Burnt Peach (y sus variantes blush/ember) solo se usa en botones primarios, badges, hover states, y elementos de llamada a la acción. Nunca como fondo de sección ni como texto de párrafo largo.</div>
+    </div>
+
+    <!-- REGLA 2 -->
+    <div style="padding:2rem;background:#3d5a80;border-left:3px solid #98c1d9">
+      <div style="font-family:'Saira Condensed',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#98c1d9;margin-bottom:.7rem">Regla 02</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:#e0fbfc;margin-bottom:.6rem">Temperatura fría, un cálido</div>
+      <div style="font-size:.82rem;color:#98c1d9;opacity:.75;line-height:1.75;font-weight:300">Todos los fondos y textos son fríos (azul-cian). Solo el acento es cálido (peach). Si usás sand o blush, son complementos del peach, no reemplazos del sistema frío.</div>
+    </div>
+
+    <!-- REGLA 3 -->
+    <div style="padding:2rem;background:#3d5a80;border-left:3px solid #e0fbfc">
+      <div style="font-family:'Saira Condensed',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#e0fbfc;margin-bottom:.7rem">Regla 03</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:#e0fbfc;margin-bottom:.6rem">Alternar temperatura de sección</div>
+      <div style="font-size:.82rem;color:#98c1d9;opacity:.75;line-height:1.75;font-weight:300">Para que la landing no sea monótona alternás: oscuro (jet/abyss/void) → medio (dusk/slate) → claro (cyan/mist/frost) → oscuro. Nunca dos secciones del mismo fondo seguidas.</div>
+    </div>
+
+    <!-- REGLA 4 -->
+    <div style="padding:2rem;background:#3d5a80;border-left:3px solid #f0c8a0">
+      <div style="font-family:'Saira Condensed',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#f0c8a0;margin-bottom:.7rem">Regla 04</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:#e0fbfc;margin-bottom:.6rem">Contraste mínimo garantizado</div>
+      <div style="font-size:.82rem;color:#98c1d9;opacity:.75;line-height:1.75;font-weight:300">Texto claro sobre fondos oscuros, texto oscuro sobre fondos claros. Cyan/frost/mist → texto jet. Jet/abyss/void/dusk → texto cyan/powder/chalk. Nunca powder sobre cyan ni dusk sobre jet.</div>
+    </div>
+
+    <!-- REGLA 5 -->
+    <div style="padding:2rem;background:#3d5a80;border-left:3px solid #b8d8e8">
+      <div style="font-family:'Saira Condensed',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#b8d8e8;margin-bottom:.7rem">Regla 05</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:#e0fbfc;margin-bottom:.6rem">Jerarquía de superficie</div>
+      <div style="font-size:.82rem;color:#98c1d9;opacity:.75;line-height:1.75;font-weight:300">Cada fondo tiene una superficie (tarjeta) que es exactamente un paso más claro. Void → Abyss. Abyss → Jet. Jet → Dusk. Dusk → Slate. Slate → Dusk-L. Nunca saltás dos pasos.</div>
+    </div>
+
+    <!-- REGLA 6 -->
+    <div style="padding:2rem;background:#3d5a80;border-left:3px solid #507090">
+      <div style="font-family:'Saira Condensed',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#507090;opacity:.9;margin-bottom:.7rem">Regla 06</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:#e0fbfc;margin-bottom:.6rem">Peach como heading (excepción)</div>
+      <div style="font-size:.82rem;color:#98c1d9;opacity:.75;line-height:1.75;font-weight:300">En secciones de stats o números grandes, podés usar peach como color del número/heading. Funciona bien sobre jet/abyss. En ese caso el botón va en ghost (borde peach, fondo transparente).</div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 5 — SECUENCIAS RECOMENDADAS
+══════════════════════════════════════════════ -->
+<section class="page-section" style="background:#1a2130">
+  <h2 class="section-title">Secuencias para tu landing</h2>
+  <p class="section-desc">Orden sugerido de combinaciones para una landing completa. Cada letra corresponde a una combinación del panel de arriba.</p>
+
+  <div style="display:flex;flex-direction:column;gap:1.2rem">
+
+    <!-- SECUENCIA 1 -->
+    <div style="padding:1.8rem;background:#1e2a3a;border:1px solid rgba(255,255,255,.06)">
+      <div style="font-family:'Saira Condensed',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#ee6c4d;margin-bottom:1rem">Secuencia 1 — Landing industrial B2B (oscura)</div>
+      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+        <span style="padding:.4rem 1rem;background:#1a2130;color:#e0fbfc;font-size:.72rem;font-weight:600;letter-spacing:.06em">C · Hero</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#3d5a80;color:#e0fbfc;font-size:.72rem;font-weight:600;letter-spacing:.06em">B · Servicios</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#293241;color:#e0fbfc;font-size:.72rem;font-weight:600;letter-spacing:.06em">A · Stats</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#2e4460;color:#e0fbfc;font-size:.72rem;font-weight:600;letter-spacing:.06em">E · Proyectos</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#e0fbfc;color:#293241;font-size:.72rem;font-weight:600;letter-spacing:.06em">G · Certs</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#293241;color:#e0fbfc;font-size:.72rem;font-weight:600;letter-spacing:.06em">A · Contacto</span>
+      </div>
+    </div>
+
+    <!-- SECUENCIA 2 -->
+    <div style="padding:1.8rem;background:#1e2a3a;border:1px solid rgba(255,255,255,.06)">
+      <div style="font-family:'Saira Condensed',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#98c1d9;margin-bottom:1rem">Secuencia 2 — Mix oscuro y claro</div>
+      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+        <span style="padding:.4rem 1rem;background:#111820;color:#c8eef0;font-size:.72rem;font-weight:600;letter-spacing:.06em">D · Hero</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#293241;color:#f0c8a0;font-size:.72rem;font-weight:600;letter-spacing:.06em">N · Stats</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#3a4a5e;color:#e0fbfc;font-size:.72rem;font-weight:600;letter-spacing:.06em">F · Servicios</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#c8eef0;color:#293241;font-size:.72rem;font-weight:600;letter-spacing:.06em">M · Equipo</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#2e4460;color:#e0fbfc;font-size:.72rem;font-weight:600;letter-spacing:.06em">E · Proyectos</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#f0fafa;color:#293241;font-size:.72rem;font-weight:600;letter-spacing:.06em">H · Contacto</span>
+      </div>
+    </div>
+
+    <!-- SECUENCIA 3 -->
+    <div style="padding:1.8rem;background:#1e2a3a;border:1px solid rgba(255,255,255,.06)">
+      <div style="font-family:'Saira Condensed',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#b8d8e8;margin-bottom:1rem">Secuencia 3 — Institucional / más clara</div>
+      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+        <span style="padding:.4rem 1rem;background:#3d5a80;color:#fff;font-size:.72rem;font-weight:600;letter-spacing:.06em">B · Hero</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#f0fafa;color:#293241;font-size:.72rem;font-weight:600;letter-spacing:.06em">H · Servicios</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#507090;color:#f0fafa;font-size:.72rem;font-weight:600;letter-spacing:.06em">L · Stats</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#e0fbfc;color:#293241;font-size:.72rem;font-weight:600;letter-spacing:.06em">G · Proyectos</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#3a4a5e;color:#f0fafa;font-size:.72rem;font-weight:600;letter-spacing:.06em">K · Equipo</span>
+        <span style="color:#507090;font-size:.8rem">→</span>
+        <span style="padding:.4rem 1rem;background:#3d5a80;color:#e0fbfc;font-size:.72rem;font-weight:600;letter-spacing:.06em">B · Contacto</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 6 — GRADIENTES Y SEPARADORES
+══════════════════════════════════════════════ -->
+<section class="page-section" style="background:#293241">
+  <h2 class="section-title">Gradientes y bordes del sistema</h2>
+  <p class="section-desc">Para transiciones entre secciones, separadores decorativos, y efectos de fondo.</p>
+
+  <div class="grad-row">
+    <div class="grad-chip" style="background:linear-gradient(135deg,#293241 0%,#3d5a80 100%)">
+      <div class="grad-chip-label">Jet → Dusk</div></div>
+    <div class="grad-chip" style="background:linear-gradient(135deg,#1a2130 0%,#293241 100%)">
+      <div class="grad-chip-label">Abyss → Jet</div></div>
+    <div class="grad-chip" style="background:linear-gradient(135deg,#111820 0%,#2e4460 100%)">
+      <div class="grad-chip-label">Void → Dusk-D</div></div>
+    <div class="grad-chip" style="background:linear-gradient(135deg,#2e4460 0%,#507090 100%)">
+      <div class="grad-chip-label">Dusk-D → Dusk-L</div></div>
+    <div class="grad-chip" style="background:linear-gradient(135deg,#3d5a80 0%,#e0fbfc 100%)">
+      <div class="grad-chip-label">Dusk → Cyan</div></div>
+  </div>
+  <div class="grad-row">
+    <div class="grad-chip" style="background:linear-gradient(135deg,#293241 0%,#3d5a80 50%,#98c1d9 100%)">
+      <div class="grad-chip-label">Tricolor frío</div></div>
+    <div class="grad-chip" style="background:linear-gradient(90deg,#ee6c4d 0%,#f48a6a 50%,#f0c8a0 100%)">
+      <div class="grad-chip-label">Gradiente cálido</div></div>
+    <div class="grad-chip" style="background:linear-gradient(90deg,transparent,#ee6c4d,transparent)">
+      <div class="grad-chip-label">Línea peach fade</div></div>
+    <div class="grad-chip" style="background:linear-gradient(90deg,transparent,#3d5a80,transparent)">
+      <div class="grad-chip-label">Línea dusk fade</div></div>
+    <div class="grad-chip" style="background:radial-gradient(ellipse at 50% 100%,rgba(61,90,128,.6) 0%,transparent 70%),#293241">
+      <div class="grad-chip-label">Glow dusk abajo</div></div>
+  </div>
+
+  <div style="margin-top:2rem;display:flex;flex-direction:column;gap:.8rem">
+    <div style="font-family:'Saira Condensed',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--powder);opacity:.35;margin-bottom:.5rem">Separadores horizontales CSS</div>
+    <div style="height:1px;background:linear-gradient(90deg,transparent,#ee6c4d,transparent)"></div>
+    <div style="height:1px;background:linear-gradient(90deg,transparent,#3d5a80,transparent)"></div>
+    <div style="height:2px;background:linear-gradient(90deg,#ee6c4d 0%,#3d5a80 40%,transparent 100%)"></div>
+    <div style="height:1px;background:linear-gradient(90deg,#ee6c4d 0%,transparent 30%)"></div>
+    <div style="height:1px;background:rgba(224,251,252,.07)"></div>
+    <div style="height:1px;background:rgba(152,193,217,.15)"></div>
+  </div>
+</section>
+
+</body>
+</html>

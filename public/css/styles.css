@@ -1,0 +1,172 @@
+/* ========================================
+   Variables y Reset Global
+   ======================================== */
+
+:root {
+  /* Paleta Base Original */
+  --jet: #293241;
+  --dusk: #3d5a80;
+  --powder: #98c1d9;
+  --cyan: #e0fbfc;
+  --peach: #ee6c4d;
+
+  /* Extensiones Oscuras */
+  --abyss: #1a2130;
+  --void: #111820;
+  --slate: #3a4a5e;
+  --dusk-d: #2e4460;
+  --dusk-l: #507090;
+
+  /* Extensiones Claras */
+  --mist: #c8eef0;
+  --frost: #f0fafa;
+  --haze: #b8d8e8;
+
+  /* Extensiones de Acento */
+  --ember: #c85a38;
+  --blush: #f48a6a;
+  --sand: #f0c8a0;
+
+  /* Neutros del Sistema */
+  --wire: #4a5a6e;
+  --smoke: #6a7e8e;
+  --chalk: #d8eaf0;
+
+  /* Aliases para backwards compatibility */
+  --jet-black: var(--jet);
+  --dusk-blue: var(--dusk);
+  --powder-blue: var(--powder);
+  --light-cyan: var(--cyan);
+  --burnt-peach: var(--peach);
+
+  /* Colores heredados (para transición gradual) */
+  --color-primary: var(--dusk);
+  --color-primary-dark: var(--dusk-d);
+  --color-secondary: var(--jet);
+  --color-text: #2d3436;
+  --color-text-light: #636e72;
+  --color-bg: #f8f9fa;
+  --color-bg-alt: #ffffff;
+  --color-border: #dfe6e9;
+  --color-accent: var(--peach);
+
+  /* Fuentes */
+  --font-family: 'Source Sans Pro', sans-serif;
+  --font-heading: 'Oswald', sans-serif;
+  --font-size-base: 1rem;
+  --font-size-sm: 0.875rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --font-size-3xl: 2.5rem;
+  --font-size-4xl: 3.5rem;
+
+  /* Espaciados */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 5rem;
+
+  /* Z-Index Scale */
+  --z-base: 10;
+  --z-dropdown: 20;
+  --z-sticky: 30;
+  --z-overlay: 40;
+  --z-modal: 50;
+
+  /* Otros */
+  --border-radius: 8px;
+  --transition: 0.3s ease;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.15);
+  --max-width: 1200px;
+  --max-width2: 1450px;
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  scroll-snap-type: y proximity;
+  overflow-y: scroll;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--jet);
+  background-color: var(--color-bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+}
+
+section {
+  scroll-snap-align: start;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ========================================
+   Focus States (Accessibility)
+   ======================================== */
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ========================================
+   Cursor Pointer para elementos clickeables
+   ======================================== */
+
+a,
+button,
+.nav__link,
+.nav__logo,
+.footer__link,
+.footer__logo {
+  cursor: pointer;
+}
+
+/* ========================================
+   Utilidades
+   ======================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+

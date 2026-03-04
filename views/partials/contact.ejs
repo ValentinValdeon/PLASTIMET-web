@@ -1,0 +1,116 @@
+<!-- Sección Contacto -->
+<section id="contact" class="contact">
+  <!-- Grid 55/45 -->
+  <div class="contact__layout">
+    <!-- Columna izquierda (55%): Mapa -->
+    <div class="contact__map-col">
+      <div id="contact__globe" class="contact__globe"></div>
+    </div>
+
+    <!-- Columna derecha (45%): Formulario -->
+    <div class="contact__form-col">
+      <div class="contact__form-panel">
+        <h2 class="contact__title">Contactanos</h2>
+        <p class="contact__subtitle">¿Necesitás advice técnico? Te respondemos en 24hs.</p>
+
+        <form id="contact__form" class="contact__form" novalidate>
+          
+          <!-- Fila 1: Nombre + Email -->
+          <div class="contact__form-row">
+            <div class="contact__field">
+              <label for="contact__name" class="contact__label contact__label--required">Nombre</label>
+              <input 
+                type="text" 
+                id="contact__name" 
+                name="name" 
+                class="contact__input" 
+                placeholder="Tu nombre"
+                required
+                minlength="2"
+              >
+              <span class="contact__error">Mínimo 2 caracteres</span>
+            </div>
+
+            <div class="contact__field">
+              <label for="contact__email" class="contact__label contact__label--required">Email</label>
+              <input 
+                type="email" 
+                id="contact__email" 
+                name="email" 
+                class="contact__input" 
+                placeholder="tu@email.com"
+                required
+              >
+              <span class="contact__error">Email inválido</span>
+            </div>
+          </div>
+
+          <!-- Fila 2: Teléfono + Empresa -->
+          <div class="contact__form-row">
+            <div class="contact__field">
+              <label for="contact__phone" class="contact__label">Teléfono</label>
+              <input 
+                type="tel" 
+                id="contact__phone" 
+                name="phone" 
+                class="contact__input" 
+                placeholder="+54 9..."
+              >
+              <span class="contact__error">Mínimo 8 dígitos</span>
+            </div>
+
+            <div class="contact__field">
+              <label for="contact__company" class="contact__label">Empresa</label>
+              <input 
+                type="text" 
+                id="contact__company" 
+                name="company" 
+                class="contact__input" 
+                placeholder="Tu empresa"
+              >
+            </div>
+          </div>
+
+          <!-- Fila 3: Tipo de producto -->
+          <div class="contact__field">
+            <label for="contact__product" class="contact__label">Tipo de producto</label>
+            <select id="contact__product" name="product" class="contact__select">
+              <option value="">Seleccioná...</option>
+              <option value="aspersión">Mangueras de aspersión</option>
+              <option value="succión">Mangueras de succión</option>
+              <option value="presión">Mangueras de presión</option>
+              <option value="tuberías">Tuberías PVC</option>
+              <option value="accesorios">Accesorios</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+
+          <!-- Fila 4: Mensaje -->
+          <div class="contact__field">
+            <label for="contact__message" class="contact__label contact__label--required">Mensaje</label>
+            <textarea 
+              id="contact__message" 
+              name="message" 
+              class="contact__textarea" 
+              placeholder="Tu consulta..."
+              required
+              minlength="10"
+            ></textarea>
+            <span class="contact__error">Mínimo 10 caracteres</span>
+          </div>
+
+          <button type="submit" class="contact__submit" id="contact__submit">
+            <span>Enviar mensaje</span>
+            <i class="fas fa-arrow-right contact__submit-icon"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="contact__toast" id="contact__toast">
+    <i class="fas fa-check-circle contact__toast-icon"></i>
+    <span class="contact__toast-message">Mensaje enviado correctamente</span>
+  </div>
+</section>

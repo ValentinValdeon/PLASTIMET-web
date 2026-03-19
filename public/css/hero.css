@@ -286,6 +286,12 @@
 }
 
 @media (max-width: 480px) {
+  /* Reducir altura para que entre completo sin scroll */
+  .hero {
+    height: 100svh;
+    min-height: unset;
+  }
+
   /* Panel oscuro ocupa toda la pantalla en mobile pequeño */
   .hero__diagonal-panel {
     width: 100%;

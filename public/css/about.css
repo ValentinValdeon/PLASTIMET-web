@@ -345,28 +345,16 @@
     gap: var(--spacing-xl);
   }
 
-  /* display: contents permite que galería y stats participen
-     directamente en el flex del layout, facilitando el reorden */
   .about__left {
-    display: contents;
+    flex: none;
+    width: 100%;
   }
 
   .about__gallery {
-    order: 1;
-    width: 100%;
     height: 320px;
   }
 
-  .about__stats {
-    order: 3;
-    width: 100%;
-    flex-direction: column;
-    gap: 0;
-    align-items: stretch;
-  }
-
   .about__content {
-    order: 2;
     width: 100%;
     padding-top: 0;
     padding-left: 0;
@@ -408,6 +396,12 @@
 
   .about__text {
     font-size: var(--font-size-base);
+  }
+
+  .about__stats {
+    flex-direction: column;
+    gap: 0;
+    align-items: stretch;
   }
 
   .about__stat {

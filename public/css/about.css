@@ -410,16 +410,23 @@
     justify-content: flex-start;
     gap: 16px;
     padding: 14px 0;
+    border-right: none;          /* resetear separador vertical de desktop */
     border-bottom: 1px solid rgba(238, 108, 77, 0.15);
     max-width: none;
+    min-width: 0;
   }
 
-  .about__stat:first-child {
-    padding-left: 0;
+  .about__stat:last-child {
+    border-bottom: none;
   }
 
   .about__stat-number-wrapper {
     min-width: 100px;
+    justify-content: flex-start;
+  }
+
+  .about__stat-line {
+    display: none;               /* la línea decorativa no tiene sentido en layout horizontal */
   }
 
   .about__stat-label {
@@ -481,15 +488,18 @@
     align-items: center;
     gap: 12px;
     padding: 12px 0;
+    border-right: none;
     border-bottom: 1px solid rgba(238, 108, 77, 0.08);
+    min-width: 0;
   }
 
-  .about__stat:first-child {
-    padding-left: 0;
+  .about__stat:last-child {
+    border-bottom: none;
   }
 
   .about__stat-number-wrapper {
     min-width: 80px;
+    justify-content: flex-start;
   }
 
   .about__stat-number {

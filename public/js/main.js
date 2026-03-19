@@ -224,13 +224,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const scrollY = window.scrollY;
       const ratio = Math.min(scrollY / heroHeight, 1);
 
-      const blur = ratio * 8;
-      heroContent.style.opacity = 1 - ratio * 1.5;
-      heroContent.style.transform = `translateY(${-scrollY * 0.4}px)`;
-      heroContent.style.filter = `blur(${blur}px)`;
+      // Usar translate3d para forzar compositing en GPU y evitar jank
+      heroContent.style.opacity = Math.max(0, 1 - ratio * 1.5);
+      heroContent.style.transform = `translate3d(0, ${-scrollY * 0.35}px, 0)`;
+      // Sin blur: filter:blur() en cada frame es demasiado costoso en GPU mobile
 
       if (scrollIndicator) {
-        scrollIndicator.style.opacity = 1 - ratio * 3.3;
+        scrollIndicator.style.opacity = Math.max(0, 1 - ratio * 3.3);
       }
 
       ticking = false;

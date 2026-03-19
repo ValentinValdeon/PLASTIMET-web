@@ -50,6 +50,19 @@
   height: 100%;
 }
 
+/* Capa invisible sobre el globe: permite scroll de página pero bloquea
+   la interacción directa con el canvas 3D del globo */
+.contact__globe-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: transparent;
+  /* pointer-events activo para capturar touch, pero touch-action:pan-y
+     deja pasar el scroll vertical al navegador */
+  touch-action: pan-y;
+  cursor: default;
+}
+
 /* Columna derecha: Formulario */
 .contact__form-col {
   display: flex;

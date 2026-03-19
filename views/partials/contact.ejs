@@ -11,7 +11,7 @@
     <div class="contact__form-col">
       <div class="contact__form-panel">
         <h2 class="contact__title">Contactanos</h2>
-        <p class="contact__subtitle">¿Necesitás advice técnico? Te respondemos en 24hs.</p>
+        <p class="contact__subtitle">¿Necesitás asesoramiento técnico? Te respondemos en 24hs.</p>
 
         <form id="contact__form" class="contact__form" novalidate>
           
@@ -28,7 +28,7 @@
                 required
                 minlength="2"
               >
-              <span class="contact__error">Mínimo 2 caracteres</span>
+              <span class="contact__error" role="alert" aria-live="polite">Mínimo 2 caracteres</span>
             </div>
 
             <div class="contact__field">
@@ -41,7 +41,7 @@
                 placeholder="tu@email.com"
                 required
               >
-              <span class="contact__error">Email inválido</span>
+              <span class="contact__error" role="alert" aria-live="polite">Email inválido</span>
             </div>
           </div>
 
@@ -56,7 +56,7 @@
                 class="contact__input" 
                 placeholder="+54 9..."
               >
-              <span class="contact__error">Mínimo 8 dígitos</span>
+              <span class="contact__error" role="alert" aria-live="polite">Mínimo 8 dígitos</span>
             </div>
 
             <div class="contact__field">
@@ -96,7 +96,7 @@
               required
               minlength="10"
             ></textarea>
-            <span class="contact__error">Mínimo 10 caracteres</span>
+            <span class="contact__error" role="alert" aria-live="polite">Mínimo 10 caracteres</span>
           </div>
 
           <button type="submit" class="contact__submit" id="contact__submit">

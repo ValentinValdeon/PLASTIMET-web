@@ -158,52 +158,55 @@ document.addEventListener('DOMContentLoaded', () => {
   let pauseTime = 2500;
 
   if (typewriterEl) {
-    // Mostrar prefijo con fade in - palabra en nuevo renglón con cursor como hermano
-    typewriterEl.innerHTML = `<span class="hero__title-prefix">${prefixText}</span><br><span class="hero__title-word"></span><span class="hero__cursor" id="cursor">|</span>`;
-    typewriterEl.style.opacity = '1';
-    
-    const wordEl = typewriterEl.querySelector('.hero__title-word');
-    
-    if (subtitleEl) subtitleEl.classList.add('hero__subtitle--visible');
-    if (ctaButton) ctaButton.classList.add('hero__cta--visible');
+    if (prefersReducedMotion) {
+      // Sin animaciones: mostrar texto estático directamente
+      typewriterEl.style.opacity = '1';
+      typewriterEl.innerHTML = `<span class="hero__title-prefix">${prefixText}</span><br><span class="hero__title-word">${words[0]}</span>`;
+      if (subtitleEl) subtitleEl.classList.add('hero__subtitle--visible');
+      if (ctaButton) ctaButton.classList.add('hero__cta--visible');
+    } else {
+      // Mostrar prefijo con fade in - palabra en nuevo renglón con cursor como hermano
+      typewriterEl.innerHTML = `<span class="hero__title-prefix">${prefixText}</span><br><span class="hero__title-word"></span><span class="hero__cursor" id="cursor">|</span>`;
+      typewriterEl.style.opacity = '1';
 
-    function type() {
-      const currentWord = words[wordIndex];
-      const currentLength = wordEl.dataset.charCount || 0;
-      
-      if (!isDeleting) {
-        wordEl.textContent = currentWord.substring(0, parseInt(currentLength) + 1);
-        wordEl.dataset.charCount = parseInt(currentLength) + 1;
-        
-        if (wordEl.textContent.length >= currentWord.length) {
-          isDeleting = true;
-          typeSpeed = pauseTime;
+      const wordEl = typewriterEl.querySelector('.hero__title-word');
+
+      if (subtitleEl) subtitleEl.classList.add('hero__subtitle--visible');
+      if (ctaButton) ctaButton.classList.add('hero__cta--visible');
+
+      function type() {
+        const currentWord = words[wordIndex];
+        const currentLength = wordEl.dataset.charCount || 0;
+
+        if (!isDeleting) {
+          wordEl.textContent = currentWord.substring(0, parseInt(currentLength) + 1);
+          wordEl.dataset.charCount = parseInt(currentLength) + 1;
+
+          if (wordEl.textContent.length >= currentWord.length) {
+            isDeleting = true;
+            typeSpeed = pauseTime;
+          } else {
+            typeSpeed = 80;
+          }
         } else {
-          typeSpeed = 80;
+          wordEl.textContent = currentWord.substring(0, parseInt(currentLength) - 1);
+          wordEl.dataset.charCount = parseInt(currentLength) - 1;
+
+          if (wordEl.textContent.length <= 0) {
+            isDeleting = false;
+            wordIndex = (wordIndex + 1) % words.length;
+            wordEl.dataset.charCount = 0;
+            typeSpeed = 300;
+          } else {
+            typeSpeed = deleteSpeed;
+          }
         }
-      } else {
-        wordEl.textContent = currentWord.substring(0, parseInt(currentLength) - 1);
-        wordEl.dataset.charCount = parseInt(currentLength) - 1;
-        
-        if (wordEl.textContent.length <= 0) {
-          isDeleting = false;
-          wordIndex = (wordIndex + 1) % words.length;
-          wordEl.dataset.charCount = 0;
-          typeSpeed = 300;
-        } else {
-          typeSpeed = deleteSpeed;
-        }
+
+        setTimeout(type, typeSpeed);
       }
 
-      setTimeout(type, typeSpeed);
+      setTimeout(type, 800);
     }
-
-    setTimeout(type, 800);
-  }
-
-  // Skip parallax if reduced motion preferred
-  if (prefersReducedMotion) {
-    return;
   }
 
   // ========================================

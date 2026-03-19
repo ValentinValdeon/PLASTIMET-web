@@ -33,7 +33,7 @@ html.page-interna section {
 
 .categoria__hero {
   background: linear-gradient(135deg, var(--jet) 0%, var(--dusk-d) 100%);
-  padding-top: calc(76px + var(--spacing-md)); /* compensa el header fijo */
+  padding-top: calc(var(--header-height) + var(--spacing-md)); /* compensa el header fijo */
   padding-bottom: var(--spacing-md);
   padding-left: var(--spacing-lg);
   padding-right: var(--spacing-lg);
@@ -141,8 +141,8 @@ html.page-interna section {
    ---------------------------------------- */
 
 .categoria__sidebar-col {
-  width: 220px;
-  min-width: 220px;
+  width: clamp(180px, 18vw, 260px); /* fluido entre 180px y 260px */
+  min-width: 0;
   flex-shrink: 0;
   background-color: var(--jet);
   border-right: 1px solid var(--dusk-d);
@@ -155,8 +155,8 @@ html.page-interna section {
 .categoria__sidebar {
   width: 100%;
   position: sticky;
-  top: 76px; /* pegado justo bajo el header */
-  max-height: calc(100vh - 76px);
+  top: var(--header-height); /* pegado justo bajo el header */
+  max-height: calc(100vh - var(--header-height));
   overflow-y: auto;
   background-color: transparent; /* el color lo da la columna padre */
   border-right: none;
@@ -466,7 +466,8 @@ html.page-interna section {
   background: none;
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
-  padding: 0.45rem 0.85rem;
+  padding: 0.75rem 0.85rem;
+  min-height: 44px;
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
   color: var(--dusk);
@@ -581,7 +582,7 @@ html.page-interna section {
 @media (max-width: 768px) {
   .categoria__hero {
     /* Mantener la compensación del header fijo, reducir el resto */
-    padding-top: calc(76px + var(--spacing-sm));
+    padding-top: calc(var(--header-height) + var(--spacing-sm));
     padding-bottom: var(--spacing-sm);
     padding-left: var(--spacing-sm);
     padding-right: var(--spacing-sm);
@@ -660,7 +661,7 @@ html.page-interna section {
   }
 
   .categoria__hero {
-    padding-top: calc(76px + var(--spacing-xs));
+    padding-top: calc(var(--header-height) + var(--spacing-xs));
     padding-bottom: var(--spacing-xs);
     padding-left: var(--spacing-sm);
     padding-right: var(--spacing-sm);
@@ -820,7 +821,7 @@ html.page-interna section {
 
 .consulta-separador__label .fas {
   color: var(--peach);
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
 }
 
 /* ========================================

@@ -17,8 +17,10 @@
     speed: 1000,
     effect: 'slide',
     loop: true,
-    allowTouchMove: false,
-    noSwiping: true,
+    // Permitir swipe en touch sin bloquear el scroll de página
+    allowTouchMove: true,
+    touchStartPreventDefault: false,
+    threshold: 20, /* px mínimos para considerar un swipe horizontal */
   });
 </script>
 

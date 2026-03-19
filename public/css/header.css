@@ -111,6 +111,13 @@
    Responsive
    ======================================== */
 
+/* Breakpoint intermedio: reducir gap en pantallas medianas */
+@media (max-width: 900px) {
+  .header__links {
+    gap: var(--spacing-sm);
+  }
+}
+
 @media (max-width: 768px) {
   .header__logo-img {
     height: 44px;

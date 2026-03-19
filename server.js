@@ -415,8 +415,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Rutas
 app.get('/', (req, res) => {
   res.render('pages/index', {
-    title: 'Mi Landing Page',
-    description: 'Bienvenido a nuestra landing page',
+    title: 'PLASTIMET — Mangueras y Caños de PVC',
+    description: 'Fabricantes de mangueras y caños de PVC de alta calidad para la industria, el hogar y el jardín. Representante exclusivo de NORRES en Argentina.',
     homeBase: '' // en el home los anchors van directo: #hero, #about...
   });
 });
@@ -429,7 +429,8 @@ app.get('/productos/:categoria', (req, res) => {
   if (!categoria) {
     return res.status(404).render('pages/index', {
       title: 'Categoría no encontrada — PLASTIMET',
-      description: 'La categoría de productos solicitada no existe.'
+      description: 'La categoría de productos solicitada no existe.',
+      homeBase: '/' // en páginas de error los anchors prefijan con /: /#hero, /#about...
     });
   }
 

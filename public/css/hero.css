@@ -299,8 +299,8 @@
       rgba(26, 33, 48, 0.75) 60%,
       rgba(26, 33, 48, 0.55) 100%
     );
-    align-items: flex-end;
-    padding-bottom: var(--spacing-2xl);
+    align-items: center;
+    padding-top: var(--spacing-3xl);
   }
 
   /* El contenido se alinea a la izquierda normal */
